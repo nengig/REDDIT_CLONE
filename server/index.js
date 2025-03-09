@@ -1,6 +1,5 @@
 import express from "express"; // if you are using type: module
 import cors from 'cors';
-import cors from 'cors';
 
 import comment_router from './comment_routes.js';
 
@@ -11,6 +10,11 @@ const PORT = process.env.PORT || 8000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
+ 
+//comment & votes routes
+app.use("/comment", comment_router);
+
+app.use(cors());  
  
 //comment & votes routes
 app.use("/comment", comment_router);
