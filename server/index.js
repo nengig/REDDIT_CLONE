@@ -1,4 +1,5 @@
 import express from "express"; // if you are using type: module
+import cors from 'cors';
  
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -6,6 +7,7 @@ const PORT = process.env.PORT || 8000;
 // middlelware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
  
 // routes
 app.get("/", (req, res) => {
