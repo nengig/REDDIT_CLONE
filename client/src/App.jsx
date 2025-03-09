@@ -1,35 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import CommentForm from "./CommentForm"
+import CommentModal from "./CommentsPage"
+import Header from "./header"
+import { Link } from "react-router-dom"
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <Header />
+      <section className="subheader">
+        <img src="https://styles.redditmedia.com/t5_2qs0q/styles/bannerBackgroundImage_7glcgg5ymxp21.png?width=2176&frame=1&auto=webp&s=66323ac09252b2feae8ba39c317ae2647733c260" alt="" />
+      </section>
+      {/* <CommentForm /> */}
+      {/* <CommentModal open={true}/> */}
+      <Link to="/Comments">Go to Comments</Link>
+    </div>
   )
 }
 
 export default App
+
+
