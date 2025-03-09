@@ -1,6 +1,9 @@
 import BoardHeader from './BoardHeader.jsx';
 import PostForm from './BoardPostForm.jsx';
 import Header from './Header.jsx';
+import CommentForm from "./CommentForm"
+import CommentModal from "./CommentsPage"
+import { Link } from "react-router-dom"
 import Avatar from './avatar.png'
 function App() {
   return (
@@ -51,9 +54,17 @@ function App() {
               nulla pariatur? </p>
           </div>
         </div>
-      </div>
+        </div>
+        <div>
+      <Header />
+      <section className="subheader">
+        <img src="https://styles.redditmedia.com/t5_2qs0q/styles/bannerBackgroundImage_7glcgg5ymxp21.png?width=2176&frame=1&auto=webp&s=66323ac09252b2feae8ba39c317ae2647733c260" alt="" />
+      </section>
+      {/* <CommentForm /> */}
+      {/* <CommentModal open={true}/> */}
+      <Link to="/Comments">Go to Comments</Link>
     </div>
-  )
-}
+      </div>
+)}
 
-export default App
+
