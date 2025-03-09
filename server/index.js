@@ -9,6 +9,11 @@ const PORT = process.env.PORT || 8000;
 // middlelware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
+ 
+//comment & votes routes
+app.use("/comment", comment_router);
+
 app.use(cors());  
  
 //comment & votes routes
