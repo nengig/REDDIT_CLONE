@@ -1,4 +1,6 @@
 import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
+import './index.css';
 import './style.css'
 import App from './App.jsx'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
