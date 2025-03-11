@@ -65,34 +65,25 @@ function CommentsPage(props) {
 
 
     return (
-        // <div className={"w-screen h-screen fixed top-0 left-0 z-20 flex "} style={{ backgroundColor: 'rgba(0,0,0,.8)' }}>
-        <div className={"w-screen h-screen fixed top-0 left-0 z-20 flex bg-reddit_dark"} >
-            {/* <div className="block overflow-scroll"> */}
-            <div className="border my-4 border-none w-3/4 lg:w-1/2 bg-reddit_dark-brighter text-reddit_text self-center p-4 mx-auto rounded-md">
-                {/* <div className="">
-                        <Comment comment={comment} id={props.id} />
-                    </div> */}
-                <div className="block overflow-scroll" style={{ maxHeight: "calc(100vh - 50px" }}>
-                    {/* <PostContent open={true} {...comment} /> */}
-                    {/* {!!comment && !!comment._id && {} */}
-                    <hr className="border-reddit_border my-4" />
-                    {/* <CommentForm rootId={Comment._id} parentId={Comment._id}/> */}
-                    <CommentForm rootId={0}
-                        parentId={1}
-                        showAuthor={true}
-                        onSubmit={() => fetchData()} />
-                    <hr className="border-reddit_border my-4" />
-                    {/* <Comments parentId={postId}/> */}
-                    <RootCommentContext.Provider value={{
-                        refreshComments: fetchCommentsByParentId,
-                        refreshVotes: refreshVotes,
-                        commentsTotals: commentVotes,
-                        userVotes: userVotes
-                    }} >
-                        <Comments parentId={'1'} comments={comments} rootId={'0'} />
-                    </RootCommentContext.Provider>
-                </div>
-            </div>
+        <div className="block overflow-scroll" style={{ maxHeight: "calc(100vh - 50px" }}>
+            {/* <PostContent open={true} {...comment} /> */}
+            {/* {!!comment && !!comment._id && {} */}
+            <hr className="border-reddit_border my-4" />
+            {/* <CommentForm rootId={Comment._id} parentId={Comment._id}/> */}
+            <CommentForm rootId={0}
+                parentId={1}
+                showAuthor={true}
+                onSubmit={() => fetchData()} />
+            <hr className="border-reddit_border my-4" />
+            {/* <Comments parentId={postId}/> */}
+            <RootCommentContext.Provider value={{
+                refreshComments: fetchCommentsByParentId,
+                refreshVotes: refreshVotes,
+                commentsTotals: commentVotes,
+                userVotes: userVotes
+            }} >
+                <Comments parentId={'1'} comments={comments} rootId={'0'} />
+            </RootCommentContext.Provider>
         </div>
     )
 }
