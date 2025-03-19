@@ -1,7 +1,8 @@
 import express from "express"; // if you are using type: module
 import cors from 'cors';
 
-import comment_router from './comment_routes.js';
+import comment_router from './routes/comment_routes.js';
+import dummy_routes from './routes/dummy_route.js'
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -13,11 +14,8 @@ app.use(cors());
  
 //comment & votes routes
 app.use("/comment", comment_router);
-
-app.use(cors());  
- 
-//comment & votes routes
-app.use("/comment", comment_router);
+//user login
+app.use('/dummy',dummy_routes);
 
 // routes
 app.get("/", (req, res) => {
