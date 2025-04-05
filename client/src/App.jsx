@@ -6,27 +6,18 @@ import Header from './Header.jsx';
 import { useEffect, useState } from 'react';
 import Avatar from './avatar.png'
 import UserContext from './UserContext.jsx';
+import axios from 'axios';
 function App() {
   const [showAuthModal, setShowAuthModal] = useState('false')
   const [user, setUser] = useState({})
   useEffect(() => {
-    fetch("http://localhost:8000/dummy/getUser")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data), setUser(data)
-      })
-      .catch((error) => console.error("Error fetching user: ", error))
+    console.log(`server: ${import.meta.env.VITE_SERVER_URL}user/getUser`)
+    axios.get(`${import.meta.env.VITE_SERVER_URL}user/getUser`, { withCredentials: true })
+      .then((response) => setUser(response.data))
   }, [])
   function logout() {
-    fetch("http://localhost:8000/dummy/logout", {
-      method: "POST",
-    })
-      .then((response) => response.json())
-      .then(() => {
-        setUser(null); // Clear frontend user state
-        console.log("Logout successful");
-      })
-      .catch((error) => console.error("Error logging out:", error));
+    axios.post(`${import.meta.env.VITE_SERVER_URL}user/logout`, '', {withCredentials:true})
+      .then(()=>setUser({}))
   }
   return (
     <div>
