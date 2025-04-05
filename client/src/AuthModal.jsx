@@ -27,7 +27,7 @@ function AuthModal(props) {
         axios.post(`${import.meta.env.VITE_SERVER_URL}user/register`, data, { withCredentials: true })
             .then(() => {
                 setUser({ username });
-                modalContext.setShow(false);
+                modalContext.setShow('false');
                 setEmail('');
                 setPassword('');
                 setUsername('');
@@ -43,7 +43,7 @@ function AuthModal(props) {
         axios.post(`${import.meta.env.VITE_SERVER_URL}user/login`, data, { withCredentials: true })
             .then(() => {
                 setUser({ username });
-                modalContext.setShow(false);
+                modalContext.setShow('false');
                 setEmail('');
                 setPassword('');
                 setUsername('');
