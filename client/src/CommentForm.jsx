@@ -46,9 +46,9 @@ function CommentForm(props) {
                     placeholder={'Your comment.'} />
                 <div className="text-right">
                     {!!props.onCancel && (
-                        <Button outline className="mr-2 p-2" onClick={(e) => props.onCancel()}>Cancel</Button>
+                        <Button outline className="mr-2 p-1" onClick={(e) => props.onCancel()}>Cancel</Button>
                     )}
-                    <Button className="p-2">Comment</Button>
+                    <Button className="p-1">Comment</Button>
                 </div>
             </form>
         </div >

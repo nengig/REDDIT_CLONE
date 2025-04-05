@@ -1,34 +1,50 @@
 import express from "express"; // if you are using type: module
 import cors from 'cors';
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import * as mongoose from "mongoose";
+import dotenv from "dotenv";
 
-import comment_router from './comment_routes.js';
+import comment_router from './routes/comment_routes.js';
+import user_router from './routes/user_routes.js'
+import dummy_router from './routes/dummy_route.js'
+
+dotenv.config()
 
 const app = express();
-const PORT = process.env.PORT || 8000;
- 
-// middlelware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cors());
- 
-//comment & votes routes
-app.use("/comment", comment_router);
+const PORT = process.env.PORT;
 
-app.use(cors());  
- 
-//comment & votes routes
-app.use("/comment", comment_router);
+// middlelware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser())
+app.use(express.json());
+app.use(cors({
+  origin: "http://localhost:5173", // set your front-end origin
+  credentials: true
+}));
+
+
 
 // routes
 app.get("/", (req, res) => {
   res.send("Welcome to our server");
 });
- 
-app.listen(PORT, () => {
-  console.log(`http://localhost:${PORT}`);
-});
- 
+
+app.use("/comment", comment_router); //comment & votes routes
+app.use("/user", user_router); //log and register routes
+app.use("/dummy", dummy_router); //log and register routes
+
 app.use("", (req, res) => {
   res.status(404).send("Page not found");
 });
- 
+
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+    app.listen(PORT, () =>
+      console.log(`Server running on http://localhost:${PORT}`)
+    );
+  })
+  .catch((error) => console.error("MongoDB connection error:", error));
+
