@@ -21,7 +21,11 @@ app.use('/dummy',dummy_routes);
 app.get("/", (req, res) => {
   res.send("Welcome to our server");
 });
- 
+
+app.get("/posts", (req, res) => {
+
+});
+
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
 });
