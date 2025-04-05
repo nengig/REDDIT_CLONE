@@ -48,22 +48,6 @@ app.use((req, res, next) => {
 });
 
 
-// // dummy database
-// let posts = [
-//     {
-//         id: 1,
-//         title: "First Post",
-//         content: "This is the first post!",
-//         comments: []
-//     },
-//     {
-//         id: 2,
-//         title: "Second Post",
-//         content: "This is the second post!",
-//         comments: []
-//     }
-// ];
-
 
 
 // // get all posts with their comments
