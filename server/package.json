@@ -9,10 +9,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
+    "cookie": "^1.0.2",
     "cors": "^2.8.5",
+    "debug": "^4.4.0",
     "express": "^4.21.2",
     "nodemon": "^3.1.9"
-  }
+  },
+  "description": ""
 }
