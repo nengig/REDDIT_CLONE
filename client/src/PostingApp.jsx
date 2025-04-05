@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-const App = () => {
+const PostingApp = () => {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({ title: '', content: '' });
   const [selectedPost, setSelectedPost] = useState(null);
 
   // fetch posts
   useEffect(() => {
-    fetch('http://localhost:8000/posts')
+    fetch('http://localhost:5000/posts')
       .then((response) => response.json())
       .then((data) => setPosts(data))
       .catch((error) => console.error('Error fetching posts:', error));
@@ -23,7 +23,7 @@ const App = () => {
   const handlePostSubmit = (e) => {
     e.preventDefault();
 
-    fetch('http://localhost:8000/posts', {
+    fetch('http://localhost:5000/posts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newPost),
@@ -102,4 +102,4 @@ const App = () => {
     </div>
   );
 };
-export default App;
+export default PostingApp;
