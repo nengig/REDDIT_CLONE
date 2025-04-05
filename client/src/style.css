@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --color-reddit_dark: #030303;
+  --color-reddit_dark-brighter: #1a1a1a;
+  --color-reddit_dark-brightest: #272728;
+  --color-reddit_border: #343536;
+  --color-reddit_text:  rgb(215, 218, 220);
+  --color-reddit_text-darker:  #818384;
+  --color-reddit_orange: #f54404;
+  --color-reddit_red: #f54404;
+}
