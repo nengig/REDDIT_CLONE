@@ -4,6 +4,7 @@ import Input from "./Input"
 import { useState, useContext, useRef } from "react"
 import { useClickAway } from 'react-use';
 import UserContext from "./UserContext";
+import axios from "axios";
 function AuthModal(props) {
     const [modalType, setModalType] = useState('login')
     const [email, setEmail] = useState("")
@@ -19,55 +20,36 @@ function AuthModal(props) {
     if (modalContext.show != modalType) {
         setModalType(modalContext.show)
     }
-    function register() {
-        fetch("http://localhost:8000/dummy/register", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, email, password }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.message === "Registration successful") {
-                console.log("User registered:", data.user);
-                setUser(data.user)
-                // Handle successful registration (e.g., navigate to login page or show success message)
-              } else {
-                setErrorMessage(data.message); // Show error message
-              }
-              modalContext.setShow('false')
-              setUsername("")
-              setEmail("")
-              setPassword("")
+    function register(e) {
+        e.preventDefault();
+        const data = { email, username, password }
+        console.log(`server: ${import.meta.env.VITE_SERVER_URL}user/register`)
+        axios.post(`${import.meta.env.VITE_SERVER_URL}user/register`, data, { withCredentials: true })
+            .then(() => {
+                setUser({ username });
+                modalContext.setShow(false);
+                setEmail('');
+                setPassword('');
+                setUsername('');
             })
-            .catch((error) => {
-              console.error("Error during registration:", error);
-              setErrorMessage("Something went wrong. Please try again.");
+            .catch(error => {
+                console.error('GET error:', error);
             });
     }
+
     function login() {
-        fetch("http://localhost:8000/dummy/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, password }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.message === "Login successful") {
-                    setUser(data.user); // Store the user info in the variable
-                    console.log("Login successful:", data);
-                } else {
-                    console.error("Invalid login:", data.message);
-                }
-                modalContext.setShow('false')
-                setUsername("")
-                setPassword("")
+        const data = { username, password }
+        console.log(`server: ${import.meta.env.VITE_SERVER_URL}user/login`)
+        axios.post(`${import.meta.env.VITE_SERVER_URL}user/login`, data, { withCredentials: true })
+            .then(() => {
+                setUser({ username });
+                modalContext.setShow(false);
+                setEmail('');
+                setPassword('');
+                setUsername('');
             })
-            .catch((error) => {
-                console.error("Error logging in:", error);
+            .catch(error => {
+                console.error('GET error:', error);
             });
     }
 
