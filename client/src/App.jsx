@@ -1,105 +1,79 @@
-import React, { useState, useEffect } from 'react';
-
-const App = () => {
-  const [posts, setPosts] = useState([]);
-  const [newPost, setNewPost] = useState({ title: '', content: '' });
-  const [selectedPost, setSelectedPost] = useState(null);
-
-  // fetch posts
+import AuthModal from './AuthModal.jsx';
+import AuthModalContext from './AuthModalContext.jsx';
+import BoardHeader from './BoardHeader.jsx';
+import PostForm from './BoardPostForm.jsx';
+import Header from './Header.jsx';
+import { useEffect, useState } from 'react';
+import Avatar from './avatar.png'
+import UserContext from './UserContext.jsx';
+import axios from 'axios';
+function App() {
+  const [showAuthModal, setShowAuthModal] = useState('false')
+  const [user, setUser] = useState({})
   useEffect(() => {
-    fetch('http://localhost:8000/posts')
-      .then((response) => response.json())
-      .then((data) => setPosts(data))
-      .catch((error) => console.error('Error fetching posts:', error));
-  }, []);
-
-  // form changes for creating a post
-  const handlePostChange = (e) => {
-    const { name, value } = e.target;
-    setNewPost({ ...newPost, [name]: value });
-  };
-
-  // creating a new post
-  const handlePostSubmit = (e) => {
-    e.preventDefault();
-
-    fetch('http://localhost:8000/posts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newPost),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // add new posts to the front of the list
-        setPosts([data, ...posts]);
-        setNewPost({ title: '', content: '' });
-      })
-      .catch((error) => console.error('Error creating post:', error));
-  };
-
+    console.log(`server: ${import.meta.env.VITE_SERVER_URL}user/getUser`)
+    axios.get(`${import.meta.env.VITE_SERVER_URL}user/getUser`, { withCredentials: true })
+      .then((response) => setUser(response.data))
+  }, [])
+  function logout() {
+    axios.post(`${import.meta.env.VITE_SERVER_URL}user/logout`, '', {withCredentials:true})
+      .then(()=>setUser({}))
+  }
   return (
-    <div className="App">
-      <header>
-        <h1>Boppit :)</h1>
-      </header>
-      {/* post form */}
-      <div className="create-post">
-        <h2>Create a New Post</h2>
-        <form onSubmit={handlePostSubmit}>
-          <input
-            type="text"
-            name="title"
-            placeholder="Post Title"
-            value={newPost.title}
-            onChange={handlePostChange}
-          />
-          <textarea
-            name="content"
-            placeholder="Post Content"
-            value={newPost.content}
-            onChange={handlePostChange}
-          />
-          <button type="submit">Create Post</button>
-        </form>
-      </div>
-
-      {/* post list */}
-      <div className="post-list">
-        {posts.length === 0 ? (
-          <p>No posts yet. Be the first to create one!</p>
-        ) : (
-          posts.map((post) => (
-            <div key={post.id} className="post">
-              <h3>{post.title}</h3>
-              <p>{post.content}</p>
-
-              {/* comment toggle */}
-              <button onClick={() => setSelectedPost(post.id)}>
-                {selectedPost === post.id ? 'Hide Comments' : 'Show Comments'}
-              </button>
-
-              {/* comment dispyaly */}
-              {selectedPost === post.id && (
-                <div className="comments-section">
-                  <h4>Comments</h4>
-                  <ul>
-                    {post.comments.length === 0 ? (
-                      <li>No comments yet.</li>
-                    ) : (
-                      post.comments.map((comment) => (
-                        <li key={comment.id}>
-                          <strong>{comment.author}:</strong> {comment.content}
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                </div>
-              )}
+    <div>
+      <AuthModalContext.Provider value={{ show: showAuthModal, setShow: setShowAuthModal }}>
+        <UserContext.Provider value={{ ...user, logout, setUser }}>
+          <Header />
+          <BoardHeader />
+          <PostForm />
+          <AuthModal />
+          <div className="px-6 bg-reddit_dark text-reddit_text ">
+            <div className='border border-reddit_border bg-reddit_dark-brighter p-2 rounded-md'>
+              <h5 className='text-reddit_text-darker text-sm mb-1'>Posted by u/test123 5 hours ago</h5>
+              <h2 className='text-xl mb-3'>Sample Title with some Lorem Ipsum</h2>
+              <div className='text-sm leading-6'>
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+                  doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
+                  veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+                  Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,
+                  sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+                  Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
+                  adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
+                  dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+                  exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi
+                  consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse
+                  quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas
+                  nulla pariatur? Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,
+                  sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+                  Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
+                  adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
+                  dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+                  exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi
+                  consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse
+                  quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas
+                  nulla pariatur? Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,
+                  sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+                  Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
+                  adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
+                  dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+                  exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi
+                  consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse
+                  quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas
+                  nulla pariatur? Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,
+                  sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+                  Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
+                  adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
+                  dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+                  exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi
+                  consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse
+                  quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas
+                  nulla pariatur? </p>
+              </div>
             </div>
-          ))
-        )}
-      </div>
+          </div>
+        </UserContext.Provider>
+      </AuthModalContext.Provider>
     </div>
-  );
-};
+  )
+}
 export default App;
