@@ -1,5 +1,5 @@
 import express from 'express';
-import Posts from '../Schemas/postSchema.js';
+import Posts from '../models/Post.js';
 
 
 const router = express.Router();

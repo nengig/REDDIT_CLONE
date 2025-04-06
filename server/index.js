@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import comment_router from './routes/comment_routes.js';
 import user_router from './routes/user_routes.js'
 import dummy_router from './routes/dummy_route.js'
+import router from './routes/post_router.js';
 
 dotenv.config()
 
@@ -23,6 +24,14 @@ app.use(cors({
   credentials: true
 }));
 
+mongoose.connect(process.env.MONGO_URI).then(() => {
+  console.log("Connected to MongoDB");
+  app.listen(PORT, () =>
+    console.log(`Server running on http://localhost:${PORT}`)
+  );
+})
+  .catch((error) => console.error("MongoDB connection error:", error));
+
 
 
 // routes
@@ -33,18 +42,8 @@ app.get("/", (req, res) => {
 app.use("/comment", comment_router); //comment & votes routes
 app.use("/user", user_router); //log and register routes
 app.use("/dummy", dummy_router); //log and register routes
+app.use('/posts', router);
 
 app.use("", (req, res) => {
   res.status(404).send("Page not found");
 });
-
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("Connected to MongoDB");
-    app.listen(PORT, () =>
-      console.log(`Server running on http://localhost:${PORT}`)
-    );
-  })
-  .catch((error) => console.error("MongoDB connection error:", error));
-
