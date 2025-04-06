@@ -3,6 +3,7 @@ import AuthModalContext from './AuthModalContext.jsx';
 import BoardHeader from './BoardHeader.jsx';
 import PostForm from './BoardPostForm.jsx';
 import Header from './Header.jsx';
+import CommentsPage from "./CommentsPage.jsx";
 import { useEffect, useState } from 'react';
 import Avatar from './avatar.png'
 import UserContext from './UserContext.jsx';
@@ -27,7 +28,7 @@ function App() {
           <BoardHeader />
           <PostForm />
           <AuthModal />
-          <div className="px-6 bg-reddit_dark text-reddit_text ">
+          <div className="px-6 bg-reddit_dark text-reddit_text">
             <div className='border border-reddit_border bg-reddit_dark-brighter p-2 rounded-md'>
               <h5 className='text-reddit_text-darker text-sm mb-1'>Posted by u/test123 5 hours ago</h5>
               <h2 className='text-xl mb-3'>Sample Title with some Lorem Ipsum</h2>
@@ -68,6 +69,8 @@ function App() {
                   consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse
                   quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas
                   nulla pariatur? </p>
+
+                  <CommentsPage />
               </div>
             </div>
           </div>
