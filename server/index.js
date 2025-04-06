@@ -5,9 +5,8 @@ import cookieParser from "cookie-parser";
 import * as mongoose from "mongoose";
 import dotenv from "dotenv";
 
-import comment_router from './routes/comment_routes.js';
-import user_router from './routes/user_routes.js'
-import dummy_router from './routes/dummy_route.js'
+import comment_router from './routes/comment_router.js';
+import user_router from './routes/user_router.js'
 import router from './routes/post_router.js';
 
 dotenv.config()
@@ -41,7 +40,6 @@ app.get("/", (req, res) => {
 
 app.use("/comment", comment_router); //comment & votes routes
 app.use("/user", user_router); //log and register routes
-app.use("/dummy", dummy_router); //log and register routes
 app.use('/posts', router);
 
 app.use("", (req, res) => {
