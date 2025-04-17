@@ -1,21 +1,24 @@
 import Logo from './logo.png'
 import Avatar from './avatar.png'
-import { BellIcon, 
-  ChatBubbleLeftEllipsisIcon, ChatBubbleOvalLeftEllipsisIcon, 
-  ChevronDownIcon, MagnifyingGlassIcon, 
-  PlusIcon, UserIcon, ArrowRightEndOnRectangleIcon, ArrowRightStartOnRectangleIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
+import {
+  BellIcon,
+  ChatBubbleLeftEllipsisIcon, ChatBubbleOvalLeftEllipsisIcon,
+  ChevronDownIcon, MagnifyingGlassIcon,
+  PlusIcon, UserCircleIcon, ArrowRightEndOnRectangleIcon, ArrowRightStartOnRectangleIcon, EllipsisHorizontalIcon
+} from '@heroicons/react/24/outline';
 import Button from './Button';
 import { useState, useRef, useContext } from 'react';
 import { useClickAway } from 'react-use';
 import AuthModalContext from './AuthModalContext';
 import UserContext from './UserContext';
+import { Link } from 'react-router-dom';
 function Header() {
   const [userDropdownVisibility, setuserDropdownVisibility] = useState(false);
   const dropdownRef = useRef(null); // Create ref for the dropdown
   useClickAway(dropdownRef, () => setuserDropdownVisibility(false));
   const authModal = useContext(AuthModalContext)
   const user = useContext(UserContext)
-  
+
   function toggleUserDropDown() {
     setuserDropdownVisibility(!userDropdownVisibility)
 
@@ -73,10 +76,28 @@ function Header() {
               className="absolute right-0 top-8 text-white bg-reddit_dark 
                           border border-gray-700 rounded-md z-10"
             >
-              {user.username &&(
-                <span className='w-50 block py-2 px-3 text-sm'>Hello, {user.username}</span>
+              {user.username && (
+                <div>
+                  <span className='w-50 block py-2 px-3 text-sm'>Hello, {user.username}</span>
+                  <Link
+                    to="/profile"
+                    className="flex items-center w-full py-2 px-4 text-sm hover:bg-gray-300 hover:text-black transition"
+                  >
+                    <UserCircleIcon className="w-5 h-5 mr-2" />
+                    Profile
+                  </Link>
+                  <button
+                    className='block flex w-50 py-2 px-3 hover:bg-gray-300 hover:text-black 
+         overflow-hidden text-sm '
+                    onClick={() => user.logout()}
+                  >
+                    <ArrowRightStartOnRectangleIcon className="w-5 h-5 mr-2" />
+                    Log Out
+                  </button>
+
+                </div>
               )}
-              {!user.username &&(
+              {!user.username && (
                 <button
                   className='block flex w-50 py-2 px-3 hover:bg-gray-300 hover:text-black 
            overflow-hidden text-sm '
@@ -86,16 +107,7 @@ function Header() {
                   Log In / Sign Up
                 </button>
               )}
-              {user.username &&(
-                <button
-                className='block flex w-50 py-2 px-3 hover:bg-gray-300 hover:text-black 
-         overflow-hidden text-sm '
-                onClick={() => user.logout()}
-              >
-                <ArrowRightStartOnRectangleIcon className="w-5 h-5 mr-2" />
-                Log Out
-              </button>
-              )}
+
 
             </div>
           )}

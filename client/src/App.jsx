@@ -8,26 +8,31 @@ import { useEffect, useState } from 'react';
 import Avatar from './avatar.png'
 import UserContext from './UserContext.jsx';
 import axios from 'axios';
+import UserProfile from './UserProfile.jsx';
 function App() {
   const [showAuthModal, setShowAuthModal] = useState('false')
   const [user, setUser] = useState({})
   useEffect(() => {
-    console.log(`server: ${import.meta.env.VITE_SERVER_URL}user/getUser`)
-    axios.get(`${import.meta.env.VITE_SERVER_URL}user/getUser`, { withCredentials: true })
-      .then((response) => setUser(response.data))
+    getUser()
   }, [])
   function logout() {
     axios.post(`${import.meta.env.VITE_SERVER_URL}user/logout`, '', {withCredentials:true})
       .then(()=>setUser({}))
   }
+  function getUser(){
+    console.log(`server: ${import.meta.env.VITE_SERVER_URL}user/getUser`)
+    axios.get(`${import.meta.env.VITE_SERVER_URL}user/getUser`, { withCredentials: true })
+      .then((response) => setUser(response.data))
+  }
   return (
     <div>
       <AuthModalContext.Provider value={{ show: showAuthModal, setShow: setShowAuthModal }}>
-        <UserContext.Provider value={{ ...user, logout, setUser }}>
+        <UserContext.Provider value={{ ...user, logout, setUser, getUser}}>
           <Header />
           <BoardHeader />
           <PostForm />
           <AuthModal />
+          
           <div className="px-6 bg-reddit_dark text-reddit_text">
             <div className='border border-reddit_border bg-reddit_dark-brighter p-2 rounded-md'>
               <h5 className='text-reddit_text-darker text-sm mb-1'>Posted by u/test123 5 hours ago</h5>

@@ -7,14 +7,18 @@ import auth from "../middlewares/auth.js"
 const router = express.Router();
 router.get("/getUser", auth.getToken, async (req, res) => {
     const userInfo = req.userInfo
-    try{
-        const user = await  User.findById(userInfo.id);
+    try {
+        const user = await User.findById(userInfo.id);
         if (!user) {
             return res.status(404).json({ error: "User not found." });
         }
-        res.json({ username: user.username });
+        res.json({
+            email: user.email,
+            username: user.username,
+            createdAt: user.createdAt
+        });
 
-    }catch(error){
+    } catch (error) {
         console.error("error finding user:", error);
         res.status(500).json({ message: "error finding user", error: error.message });
     }
@@ -26,6 +30,9 @@ router.post("/register", async (req, res) => {
     // Validate required fields
     if (!email || !password || !username) {
         return res.status(400).json({ message: "credentials are required." });
+    }
+    if (password.length < 8) {
+        return res.status(400).json({ message: 'password must be at least 8 characters.' });
     }
     try {
         // Check if a user with the provided email already exists
@@ -70,7 +77,7 @@ router.post("/logout", (req, res) => {
 router.post("/login", async (req, res) => {
     const { username, password } = req.body
     // Validate required fields
-    if ( !password || !username) {
+    if (!password || !username) {
         return res.status(400).json({ message: "credentials are required." });
     }
     try {
@@ -99,6 +106,96 @@ router.post("/login", async (req, res) => {
     }
 })
 
+router.put('/updateUser', auth.getToken, async (req, res) => {
+    const { username, email } = req.body;
+    const userId = req.userInfo.id; // or whatever you encoded in your token
+
+    try {
+        // Check uniqueness of email (exclude current user)
+        const emailTaken = await User.findOne({
+            email,
+            _id: { $ne: userId }
+        });
+        if (emailTaken) {
+            return res.status(400).json({ error: 'Email already in use' });
+        }
+
+        // Check uniqueness of username
+        const usernameTaken = await User.findOne({
+            username,
+            _id: { $ne: userId }
+        });
+        if (usernameTaken) {
+            return res.status(400).json({ error: 'Username already in use' });
+        }
+
+        // Perform the update
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { username, email },
+            { new: true, runValidators: true }
+        ).select('-password');  // omit password in response
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.error('error updating profile', error);
+        res.status(500).json({ message: "error changing password. try again later", error: error.message });
+    }
+});
+
+router.put('/changePassword', auth.getToken, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.userInfo.id;
+
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: 'both current and new password are required.' });
+    }
+    if (newPassword.length < 8) {
+        return res.status(400).json({ message: 'new password must be at least 8 characters.' });
+    }
+
+    try {
+        // 1) Fetch the user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'user not found.' });
+        }
+
+        // 2) Verify current password
+        const match = await bcrypt.compare(currentPassword, user.password);
+        if (!match) {
+            return res.status(400).json({ message: 'current password is incorrect.' });
+        }
+
+        // 3) Hash & update to new password
+        const hashed = await bcrypt.hash(newPassword, 10);
+        user.password = hashed;
+        await user.save();
+
+        res.json({ message: 'password updated successfully.' });
+    } catch (error) {
+        console.error("error changing password:", error);
+        res.status(500).json({ message: "error changing password. try again later", error: error.message });
+    }
+});
+
+router.delete('/delete', auth.getToken, async (req, res) => {
+    const userId = req.userInfo.id;
+    try {
+        // Optionally: remove all user‑owned data here (posts, comments, etc.)
+
+        // Delete the user
+        await User.findByIdAndDelete(userId);
+
+        // Clear the auth cookie
+        res.clearCookie('token');
+
+        res.json({ message: 'account deleted successfully.' });
+    } catch (error) {
+        console.error("error deleting account:", error);
+        res.status(500).json({ message: "error deleting account. try again later", error: error.message });
+    }
+});
 
 
 export default router
