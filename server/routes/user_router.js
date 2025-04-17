@@ -8,15 +8,15 @@ const router = express.Router();
 router.get("/getUser", auth.getToken, async (req, res) => {
     const userInfo = req.userInfo
     try {
-        const user = await User.findById(userInfo.id);
+        const user = await User
+            .findById(userInfo.id)
+            .select('-password')
+            .populate('posts')        // pulls in Posts documents
+            .populate('comments');    // pulls in Comment documents
         if (!user) {
             return res.status(404).json({ error: "User not found." });
         }
-        res.json({
-            email: user.email,
-            username: user.username,
-            createdAt: user.createdAt
-        });
+        res.json(user);
 
     } catch (error) {
         console.error("error finding user:", error);

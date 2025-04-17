@@ -104,18 +104,18 @@ function AuthModal(props) {
                 )}
                 {modalType == 'login' && (
                     <div>
-                        <Button className="w-full py-2 mb-3 hover:bg-white" onClick={login}>
+                        <Button className="w-full py-2 mb-3 hover:opacity-75" onClick={login}>
                             Log In
                         </Button>
-                        New to Reddit? <button className="text-blue-300 hover:text-blue-600" onClick={() => modalContext.setShow('register')}>Sign Up</button>
+                        New to Reddit? <button className="text-blue-300 hover:opacity-75" onClick={() => modalContext.setShow('register')}>Sign Up</button>
                     </div>
                 )}
                 {modalType == 'register' && (
                     <div>
-                        <Button className="w-full py-2 mb-3 hover:bg-white" onClick={register}>
+                        <Button className="w-full py-2 mb-3 hover:opacity-75" onClick={register}>
                             Sign Up
                         </Button>
-                        Already a redditor? <button className="text-blue-300 hover:text-blue-600" onClick={() => modalContext.setShow('login')}>Log In</button>
+                        Already a redditor? <button className="text-blue-300 hover:opacity-75" onClick={() => modalContext.setShow('login')}>Log In</button>
                     </div>
                 )}
 

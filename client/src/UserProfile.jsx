@@ -11,6 +11,8 @@ export default function UserProfile() {
 
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
+    const [viewPosts, setViewPosts] = useState(true);
+    const [viewComments, setViewComments] = useState(false);
     const [form, setForm] = useState({ username: '', email: '' });
     const [passForm, setPassForm] = useState({
         currentPassword: '',
@@ -118,7 +120,7 @@ export default function UserProfile() {
 
     return (
         <div className="min-h-screen bg-reddit_dark text-gray-400 p-6 flex justify-center">
-            <div className="w-full max-w-lg bg-reddit-dark-brighter rounded-lg shadow-lg overflow-hidden">
+            <div className="w-3/4  bg-reddit-dark-brighter rounded-lg shadow-lg overflow-hidden">
 
                 {/* Header */}
                 <div className="p-6 flex items-center justify-between">
@@ -141,7 +143,7 @@ export default function UserProfile() {
                             setIsEditing(v => !v);
                             setError('');
                         }}
-                        className="px-4 py-2 bg-reddit-orange  text-gray-400 rounded hover:text-white transition"
+                        className="px-4 py-2 bg-reddit_orange text-reddit_text rounded hover:opacity-75 transition"
                     >
                         {isEditing ? 'Cancel' : 'Edit Profile'}
                     </button>
@@ -172,90 +174,180 @@ export default function UserProfile() {
                         </div>
                         <button
                             type="submit"
-                            className="w-full px-4 py-2 bg-reddit-orange  text-gray-400 rounded hover:text-white transition"
+                            className="w-full px-4 py-2 bg-reddit_orange  text-reddit_text rounded hover:opacity-75 transition"
                         >
                             Save Changes
                         </button>
                     </form>
                 )}
-
-                {/* Change Password */}
-                {!isEditing && (
+                {!isEditing && !isChangingPassword && (
                     <div className="border-t border-reddit-border p-6 space-y-4">
-                        <button
+                        <div>
+                            <h2 className="text-sm text-gray-400 mb-1">Joined On</h2>
+                            <p className="font-medium">{cakeDay} 🎂</p>
+                        </div>
+
+                        <div>
+                            {viewPosts && !viewComments && (
+                                <div>
+                                    <div className='flex justify-center text-reddit_text'>
+                                        <button
+                                            type='button'
+                                            className='mr-10 text-reddit_text hover:text-white underline decoration-reddit_orange decoration-5'
+                                            onClick={() => { setViewComments(false), setViewPosts(true) }}
+                                        >
+                                            Posts
+                                        </button>
+                                        <button
+                                            type='button'
+                                            className='ml-10 text-reddit_text hover:text-white'
+                                            onClick={() => { setViewComments(true), setViewPosts(false) }}
+                                        >
+                                            Comments
+                                        </button>
+                                    </div>
+                                    {user.posts?.length > 0 ? (
+                                        <div className="p-6 border-t border-reddit-border">
+                                            <h2 className="text-xl font-semibold mb-4">Your Posts</h2>
+                                            <ul className="space-y-4">
+                                                {user.posts.map(post => (
+                                                    <li key={post._id} className="p-4 rounded border border-reddit-border hover:bg-reddit-dark-brightest">
+                                                        <h3 className="text-lg font-semibold">{post.title}</h3>
+                                                        <p className="text-sm text-reddit-text-darker mt-1">
+                                                            {new Date(post.createdAt).toLocaleDateString()}
+                                                        </p>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ) : (<p>no posts</p>)}
+                                </div>
+                            )}
+                            {!viewPosts && viewComments && (
+                                <div>
+                                    <div className='flex justify-center text-reddit_text'>
+                                        <button
+                                            type='button'
+                                            className='mr-10 text-reddit_text hover:text-white'
+                                            onClick={() => { setViewComments(false), setViewPosts(true) }}
+                                        >
+                                            Posts
+                                        </button>
+                                        <button
+                                            type='button'
+                                            className='ml-10 text-reddit_text hover:text-white underline decoration-reddit_orange decoration-5'
+                                            onClick={() => { setViewComments(true), setViewPosts(false) }}
+                                        >
+                                            Comments
+                                        </button>
+                                    </div>
+                                    {user.comments?.length > 0 ? (
+                                        <div className="p-6 border-t border-reddit-border">
+                                            <h2 className="text-xl font-semibold mb-4">Your Comments</h2>
+                                            <ul className="space-y-4">
+                                                {user.comments.map(comment => (
+                                                    <li key={comment._id} className="p-4 rounded border border-reddit-border hover:bg-reddit-dark-brightest">
+                                                        <p className="text-sm">{comment.content}</p>
+                                                        <p className="text-xs text-reddit-text-darker mt-1">
+                                                            on {new Date(comment.createdAt).toLocaleDateString()}
+                                                        </p>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ) : (<p>no comments</p>)}
+                                </div>
+
+                            )}
+
+
+                        </div>
+
+                        {error && <p className="text-red-500">{error}</p>}
+
+                    </div>
+                )}
+                {!isEditing && !isChangingPassword && (
+                    <div className='py-2'>
+                        < button
                             onClick={() => {
                                 setIsEditing(false);
                                 setIsChangingPassword(v => !v);
                                 setError('');
                             }}
-                            className="w-full px-4 py-2 bg-reddit-dark-brightest text-gray-400 rounded hover:text-white transition"
+                            className="w-full px-4 py-2 bg-reddit_orange text-white rounded hover:opacity-75 transition"
                         >
-                            {isChangingPassword ? 'Cancel Password Change' : 'Change Password'}
+                            Change Password
                         </button>
-
-                        {isChangingPassword && (
-                            <form onSubmit={handlePasswordSubmit} className="space-y-3 pt-4">
-                                {error && <p className="text-red-500">{error}</p>}
-                                <div>
-                                    <label className="block text-sm text-gray-400">Current Password</label>
-                                    <input
-                                        type="password"
-                                        name="currentPassword"
-                                        value={passForm.currentPassword}
-                                        onChange={handlePassChange}
-                                        className="w-full mt-1 p-2 bg-reddit-dark-brightest rounded border border-reddit-border"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm text-gray-400">New Password</label>
-                                    <input
-                                        type="password"
-                                        name="newPassword"
-                                        value={passForm.newPassword}
-                                        onChange={handlePassChange}
-                                        className="w-full mt-1 p-2 bg-reddit-dark-brightest rounded border border-reddit-border"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm text-gray-400">Confirm New Password</label>
-                                    <input
-                                        type="password"
-                                        name="confirmPassword"
-                                        value={passForm.confirmPassword}
-                                        onChange={handlePassChange}
-                                        className="w-full mt-1 p-2 bg-reddit-dark-brightest rounded border border-reddit-border"
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="w-full px-4 py-2 bg-reddit-orange  text-gray-400 rounded hover:text-white transition"
-                                >
-                                    Update Password
-                                </button>
-                            </form>
-                        )}
                     </div>
                 )}
 
-                {/* Cake‑day & Delete Account */}
-                {!isEditing && !isChangingPassword && (
-                    <div className="border-t border-reddit-border p-6 space-y-4">
-                        <div>
-                            <h2 className="text-sm text-gray-400 mb-1">Cake‑day</h2>
-                            <p className="font-medium">{cakeDay} 🎂</p>
-                        </div>
+
+                {isChangingPassword && (
+                    <form onSubmit={handlePasswordSubmit} className="space-y-3 pt-4">
                         {error && <p className="text-red-500">{error}</p>}
+                        <div>
+                            <label className="block text-sm text-gray-400">Current Password</label>
+                            <input
+                                type="password"
+                                name="currentPassword"
+                                value={passForm.currentPassword}
+                                onChange={handlePassChange}
+                                className="w-full mt-1 p-2 bg-reddit-dark-brightest rounded border border-reddit-border"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-gray-400">New Password</label>
+                            <input
+                                type="password"
+                                name="newPassword"
+                                value={passForm.newPassword}
+                                onChange={handlePassChange}
+                                className="w-full mt-1 p-2 bg-reddit-dark-brightest rounded border border-reddit-border"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-gray-400">Confirm New Password</label>
+                            <input
+                                type="password"
+                                name="confirmPassword"
+                                value={passForm.confirmPassword}
+                                onChange={handlePassChange}
+                                className="w-full mt-1 p-2 bg-reddit-dark-brightest rounded border border-reddit-border"
+                            />
+                        </div>
+                        <div className='flex '>
+                            <button
+                                type="button"
+                                onClick={() => { setIsChangingPassword(!isChangingPassword) }}
+                                className="w-1/2 px-4 py-2 mr-2 bg-red-700 text-reddit_text rounded hover:opacity-75 transition"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="w-1/2 px-4 py-2 ml-2 bg-reddit_orange text-reddit_text rounded hover:opacity-75 transition"
+                            >
+                                Update Password
+                            </button>
+
+                        </div>
+                    </form>
+                )}
+                {!isEditing && !isChangingPassword && (
+                    <div className='py-2'>
                         <button
                             onClick={handleDelete}
-                            className="w-full px-4 py-2 bg-red-600  text-white rounded hover:bg-red-700 transition"
+                            className="w-full px-4 py-2 bg-red-600  text-white rounded hover:opacity-75 transition"
                         >
                             Delete Account
                         </button>
                     </div>
                 )}
 
+
             </div>
-        </div>
+        </div >
     );
 }
 
