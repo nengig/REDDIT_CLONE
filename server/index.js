@@ -3,7 +3,14 @@ import dotenv from 'dotenv';
 import express, { json } from 'express';
 import { connect } from 'mongoose';
 import cors from 'cors';
-import postsRouter from './routes/post_router.js';
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import * as mongoose from "mongoose";
+import dotenv from "dotenv";
+
+import comment_router from './routes/comment_router.js';
+import user_router from './routes/user_router.js'
+import router from './routes/post_router.js';
 
 dotenv.config();
 const app = express();

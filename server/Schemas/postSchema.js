@@ -1,9 +1,6 @@
-const postSchema = new mongoose.Schema({
-  author: {
-    type: String,
-    required: true,
-    trim: true,
-  },
+import { Schema, model } from 'mongoose';
+
+const postSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -13,8 +10,17 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  postedAt: {
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  createdAt: {
     type: Date,
     default: Date.now,
   },
 });
+
+const Posts = model('Posts', postSchema);
+
+export default Posts;
