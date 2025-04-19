@@ -1,22 +1,35 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import './index.css';
-import './style.css'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import Layout from './layout.jsx';
+import Home from './Home.jsx';
+import UserProfile from './UserProfile.jsx';
+import { Provider } from 'react-redux';
 import CommentsPage from './CommentsPage.jsx';
-import PostDetails from './PostDetails.jsx';
 import PostingApp from './PostingApp.jsx';
-import PostForm from './PostsForm.jsx';
+import PostsForm from './PostsForm.jsx';
+import App from './App.jsx';
+import { store } from './app/store';
+
+import PostDetails from './PostDetails.jsx';
+
+import './index.css';
+import './style.css';
 
 createRoot(document.getElementById('root')).render(
-  <Router>
+  <Provider store={store}>
+    <Router>
     <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/Comments" element={<CommentsPage />} />
-      <Route path="/posts" element={<PostingApp />} />
-      <Route path="/create-post" element={<PostForm />} />
-      <Route path="/post/:id" element={<PostDetails />} />
-      
-    </Routes>
-  </Router>
+  <Route element={<Layout />}>
+    <Route index element={<App />} /> {/* Your main homepage/feed */}
+    <Route path="create-post" element={<PostsForm />} />
+    <Route path="edit-post/:id" element={<PostsForm />} />
+    <Route path="post/:id" element={<PostDetails />} />
+    <Route path="comments" element={<CommentsPage />} />
+    <Route path="*" element={<p className="p-6">Page not found</p>} />
+  </Route>
+</Routes>
+
+    </Router>
+  </Provider>
 )

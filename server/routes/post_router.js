@@ -1,58 +1,85 @@
-import express from 'express';
-import Posts from '../Schemas/postSchema.js';
+// routes/posts.js
+import { Router } from 'express';
+const postRouter = Router();
+import Post from '../models/Post.js';
 
-
-const router = express.Router();
-
-router.get('/', async (req, res) => {
+// view all posts
+postRouter.get('/', async (req, res) => {
   try {
-    const posts = await Posts.find();
+    const posts = await Post.find().sort({ postedAt: -1 });
     res.json(posts);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('❌ Error fetching posts:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve posts' });
   }
 });
 
-// adding a post
 
-router.post('/', async (req, res) => {
-  const { title, content, author } = req.body;
-  console.log(req.body);
-
-  if (!title || !content || !author) {
-    return res.status(400).json({ message: 'Title, content, and author are required' });
-  }
-
-  const newPost = new Posts({
-    title,
-    content,
-    author,
-  });
-
+// create a post
+postRouter.post('/', async (req, res) => {
   try {
-    const savedPost = await newPost.save(); // Save new post to MongoDB
+    const newPost = new Post(req.body);
+    const savedPost = await newPost.save();
     res.status(201).json(savedPost);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating post', error });
+  } catch (err) {
+    console.error('❌ Error creating post:', err.message);
+    res.status(500).json({ error: 'Failed to create post' });
   }
 });
 
-// Route to fetch a specific post by id
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
-
+// Get a post by ID
+postRouter.get('/:id', async (req, res) => {
   try {
-    const post = await Posts.findById(id);
-
+    const post = await Post.findById(req.params.id);
     if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
+      return res.status(404).json({ error: 'Post not found' });
     }
-
     res.json(post);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching post', error: err.message });
+    console.error('❌ Error fetching post:', err.message);
+    res.status(500).json({ error: 'Error retrieving post' });
+  }
+});
+
+// edit posts
+postRouter.put('/:id', async (req, res) => {
+  const { title, body } = req.body;
+
+  if (!title || !body) {
+    return res.status(400).json({ error: 'Title and body are required' });
+  }
+
+  try {
+    const updated = await Post.findByIdAndUpdate(
+      req.params.id,
+      { title, body },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    res.json(updated);
+  } catch (err) {
+    console.error('❌ Error updating post:', err.message);
+    res.status(500).json({ error: 'Failed to update post' });
+  }
+});
+
+// delete posts
+postRouter.delete('/:id', async (req, res) => {
+  try {
+    const deleted = await Post.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    res.json({ message: 'Post deleted successfully' });
+  } catch (err) {
+    console.error('❌ Error deleting post:', err.message);
+    res.status(500).json({ error: 'Failed to delete post' });
   }
 });
 
 
-export default router;
+export default postRouter;
