@@ -1,6 +1,7 @@
 import React from 'react';
-import { useGetPostsQuery } from './features/api/apiSlice'; // Assuming you're using RTK Query for fetching posts
-import PostDetails from './PostDetails'; // This will be the component for rendering each individual post
+import { useGetPostsQuery } from './features/api/apiSlice';
+// rendering posts
+import PostDetails from './PostDetails'; 
 
 const PostList = () => {
   const { data: posts, isLoading, isError } = useGetPostsQuery(); // Fetch all posts

@@ -1,10 +1,10 @@
 // routes/posts.js
 import { Router } from 'express';
-const router = Router();
+const postRouter = Router();
 import Post from '../models/Post.js';
 
 // view all posts
-router.get('/', async (req, res) => {
+postRouter.get('/', async (req, res) => {
   try {
     const posts = await Post.find().sort({ postedAt: -1 });
     res.json(posts);
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 
 // create a post
-router.post('/', async (req, res) => {
+postRouter.post('/', async (req, res) => {
   try {
     const newPost = new Post(req.body);
     const savedPost = await newPost.save();
@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get a post by ID
-router.get('/:id', async (req, res) => {
+postRouter.get('/:id', async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) {
@@ -42,7 +42,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // edit posts
-router.put('/:id', async (req, res) => {
+postRouter.put('/:id', async (req, res) => {
   const { title, body } = req.body;
 
   if (!title || !body) {
@@ -68,7 +68,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // delete posts
-router.delete('/:id', async (req, res) => {
+postRouter.delete('/:id', async (req, res) => {
   try {
     const deleted = await Post.findByIdAndDelete(req.params.id);
     if (!deleted) {
@@ -82,4 +82,4 @@ router.delete('/:id', async (req, res) => {
 });
 
 
-export default router;
+export default postRouter;

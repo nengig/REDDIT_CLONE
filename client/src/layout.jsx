@@ -4,7 +4,7 @@ import AuthModal from './AuthModal.jsx';
 import AuthModalContext from './AuthModalContext.jsx';
 import Header from './Header.jsx';
 import BoardHeader from './BoardHeader.jsx';
-import PostForm from './BoardPostForm.jsx';
+// import PostForm from './BoardPostForm.jsx';
 import { useNavigate } from 'react-router-dom';
 import UserContext from './UserContext.jsx';
 import { useEffect, useState } from 'react';
