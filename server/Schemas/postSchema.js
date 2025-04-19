@@ -1,19 +1,20 @@
-import { Schema, model } from 'mongoose';
-
-const postSchema = new Schema({
-    title: String,
-    content: String,
-    author: String,
-    createdAt: { type: Date, default: Date.now },
-    comments: [
-      {
-        author: String,
-        content: String,
-        createdAt: { type: Date, default: Date.now },
-      },
-    ],
-  });
-
-  const Posts = model('Posts', postSchema);
-
-export default Posts;
+const postSchema = new mongoose.Schema({
+  author: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  body: {
+    type: String,
+    required: true,
+  },
+  postedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
