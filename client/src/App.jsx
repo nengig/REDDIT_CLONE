@@ -7,7 +7,7 @@ import SubredditSidebar from './SubredditSidebar.jsx';
 import AuthModal from './AuthModal.jsx';
 import AuthModalContext from './AuthModalContext.jsx';
 import PostForm from './BoardPostForm.jsx';
-import Post from './Post.jsx';
+import Post from './PostPage.jsx';
 import CommentsPage from "./CommentsPage.jsx";
 import Avatar from './avatar.png'
 import UserContext from './UserContext.jsx';
@@ -45,7 +45,6 @@ function App() {
           value={{ show: showAuthModal, setShow: setShowAuthModal }}>
           <UserContext.Provider value={{ ...user, logout, setUser }}>
             <BoardHeader />
-            {/* <PostForm /> */}
             <div className="flex flex-col lg:flex-row px-6 gap-6 mt-6">
               {/* MAIN CONTENT */}
               <div className="w-full lg:w-2/3 space-y-6">

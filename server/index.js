@@ -2,19 +2,17 @@ import dotenv from 'dotenv';
 import express, { json } from 'express';
 import { connect } from 'mongoose';
 import cors from 'cors';
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
-import * as mongoose from "mongoose";
+import cookieParser from 'cookie-parser';
 import postRouter from './routes/post_router.js';
-
-import comment_router from './routes/comment_router.js';
-import user_router from './routes/user_router.js'
-import router from './routes/post_router.js';
 
 dotenv.config();
 const app = express();
+
+// Use middleware to parse JSON bodies in the request
 app.use(cors());
-app.use(json());
+app.use(json()); // Parses incoming requests with JSON payloads
+app.use(cookieParser()); // To handle cookies if needed
+
 app.use('/api/posts', postRouter);
 
 const startServer = async () => {
