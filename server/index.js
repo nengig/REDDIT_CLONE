@@ -2,19 +2,28 @@ import dotenv from 'dotenv';
 import express, { json } from 'express';
 import { connect } from 'mongoose';
 import cors from 'cors';
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
-import * as mongoose from "mongoose";
-import postRouter from './routes/post_router.js';
+import cookieParser from 'cookie-parser';
 
-import comment_router from './routes/comment_router.js';
-import user_router from './routes/user_router.js'
-import router from './routes/post_router.js';
+import postRouter from './routes/post_router.js';
+import userRouter from './routes/user_router.js'; // 👈 import user routes
+import commentRouter from './routes/comment_router.js';
 
 dotenv.config();
 const app = express();
-app.use(cors());
-app.use(json());
+
+// CORS setup
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
+
+// Middleware
+app.use(json()); // to parse JSON bodies
+app.use(cookieParser()); // to handle cookies
+
+// Routes
+app.use("/comment", commentRouter); //comment & votes routes
+app.use("/api/user", userRouter); //log and register routes
 app.use('/api/posts', postRouter);
 
 const startServer = async () => {

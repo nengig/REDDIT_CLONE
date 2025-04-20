@@ -5,6 +5,7 @@ import { useState, useContext, useRef, useEffect } from "react"
 import { useClickAway } from 'react-use';
 import UserContext from "./UserContext";
 import axios from "axios";
+
 function AuthModal(props) {
     const [modalType, setModalType] = useState('login')
     const [email, setEmail] = useState("")
