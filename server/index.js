@@ -3,16 +3,27 @@ import express, { json } from 'express';
 import { connect } from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+
 import postRouter from './routes/post_router.js';
+import userRouter from './routes/user_router.js'; // 👈 import user routes
+import commentRouter from './routes/comment_router.js';
 
 dotenv.config();
 const app = express();
 
-// Use middleware to parse JSON bodies in the request
-app.use(cors());
-app.use(json()); // Parses incoming requests with JSON payloads
-app.use(cookieParser()); // To handle cookies if needed
+// CORS setup
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
 
+// Middleware
+app.use(json()); // to parse JSON bodies
+app.use(cookieParser()); // to handle cookies
+
+// Routes
+app.use("/comment", commentRouter); //comment & votes routes
+app.use("/api/user", userRouter); //log and register routes
 app.use('/api/posts', postRouter);
 
 const startServer = async () => {

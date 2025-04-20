@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(),
     tailwindcss(),],
     server: {
-      port: 3000,  // Set the Vite port to 3000 (or another port of your choice)
+      port: 5173,  // Set the Vite port to 3000 (or another port of your choice)
       proxy: {
         // Proxy API requests to the backend server running on port 8000
         '/api': {

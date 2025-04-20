@@ -19,6 +19,10 @@ function App() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
+    getUser()
+  }, [])
+
+  useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_SERVER_URL}user/getUser`, {
         withCredentials: true,
@@ -38,12 +42,15 @@ function App() {
     axios.get(`${import.meta.env.VITE_SERVER_URL}user/getUser`, { withCredentials: true })
       .then((response) => setUser(response.data))
   }
+
   return (
     <>
       <div className="bg-reddit_dark min-h-screen text-reddit_text">
         <AuthModalContext.Provider
           value={{ show: showAuthModal, setShow: setShowAuthModal }}>
-          <UserContext.Provider value={{ ...user, logout, setUser }}>
+          <UserContext.Provider value={{ ...user, logout, setUser, getUser }}>
+          <Header />
+          
             <BoardHeader />
             <div className="flex flex-col lg:flex-row px-6 gap-6 mt-6">
               {/* MAIN CONTENT */}

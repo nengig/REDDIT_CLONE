@@ -1,12 +1,12 @@
 import { Router } from 'express';
 const postRouter = Router();
-import Post from '../models/Post.js';
+import Posts from '../models/Post.js';
 
 // view all posts
 postRouter.get('/', async (req, res) => {
   console.log('➡️ Received POST:', req.body);
   try {
-    const posts = await Post.find().sort({ postedAt: -1 });
+    const posts = await Posts.find().sort({ createdAt: -1 });
     res.json(posts);
   } catch (err) {
     console.error('❌ Error fetching posts:', err.message);
@@ -16,9 +16,11 @@ postRouter.get('/', async (req, res) => {
 
 // create a post
 postRouter.post('/', async (req, res) => {
+  console.log('➡️ Route is being hit!'); // This should log when the post request is made.
+  console.log('➡️ Received Post Data:', req.body); //
   console.log('➡️ Received Post Data:', req.body); // Log the incoming request body
   try {
-    const newPost = new Post(req.body); // Ensure this is a valid Post object
+    const newPost = new Posts(req.body); // Ensure this is a valid Post object
     const savedPost = await newPost.save();
     console.log('Post to be saved:', newPost);
     console.log('✅ Post saved:', savedPost); // Log the saved post to verify
@@ -33,7 +35,7 @@ postRouter.post('/', async (req, res) => {
 // Get a post by ID
 postRouter.get('/:id', async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Posts.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
@@ -53,7 +55,7 @@ postRouter.put('/:id', async (req, res) => {
   }
 
   try {
-    const updated = await Post.findByIdAndUpdate(
+    const updated = await Posts.findByIdAndUpdate(
       req.params.id,
       { title, body },
       { new: true }
@@ -73,7 +75,7 @@ postRouter.put('/:id', async (req, res) => {
 // delete posts
 postRouter.delete('/:id', async (req, res) => {
   try {
-    const deleted = await Post.findByIdAndDelete(req.params.id);
+    const deleted = await Posts.findByIdAndDelete(req.params.id);
     if (!deleted) {
       return res.status(404).json({ error: 'Post not found' });
     }

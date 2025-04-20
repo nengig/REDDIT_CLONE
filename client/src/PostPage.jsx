@@ -10,7 +10,7 @@ const PostPage = () => {
 
   useEffect(() => {
     // Fetch the post data by ID
-    axios.get(`${import.meta.env.VITE_SERVER_URL}posts/${id}`)
+    axios.get(`${import.meta.env.VITE_SERVER_URL}posts/${id}`, { withCredentials: true })
       .then((res) => {
         setPost(res.data);
       })

@@ -20,16 +20,18 @@ import PostPage from './PostPage.jsx';
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <Router>
-    <Routes>
-  <Route element={<Layout />}>
-    <Route index element={<App />} /> 
-    <Route path="create-post" element={<PostsForm />} />
-    <Route path="edit-post/:id" element={<PostsForm />} />
-    <Route path="post/:id" element={<PostPage />} />
-    <Route path="comments" element={<CommentsPage />} />
-    <Route path="*" element={<p className="p-6">Page not found</p>} />
-  </Route>
-</Routes>
+      <Routes>
+        <Route element={<Layout />}>
+          {/* <Route index element={<App />} /> */}
+          <Route index element={<Home />} />
+          <Route path="profile" element={<UserProfile />} />
+          <Route path="create-post" element={<PostsForm />} />
+          <Route path="edit-post/:id" element={<PostsForm />} />
+          <Route path="post/:id" element={<PostPage />} />
+          <Route path="comments" element={<CommentsPage />} />
+          <Route path="*" element={<p className="p-6">Page not found</p>} />
+        </Route>
+      </Routes>
 
     </Router>
   </Provider>

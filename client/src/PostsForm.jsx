@@ -6,8 +6,13 @@ import {
 } from './features/api/apiSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import UserContext from './UserContext';
+import { useContext } from 'react';
+
 
 const PostsForm = () => {
+  const user = useContext(UserContext);
+
   const navigate = useNavigate();
   const { id } = useParams(); // Get post ID if in edit mode
   const isEdit = Boolean(id);
@@ -44,10 +49,23 @@ const PostsForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const postData = {
+      ...form,
+      author: `u/${user.username}`,
+      userId: user._id,
+    };
+  
+    console.log('Post Data Being Sent:', postData);  // Log the data before sending it
+
     if (isEdit) {
       await updatePost({ id, ...form });
     } else {
-      await createPost(form);
+      await createPost({
+        ...form,
+        author: `u/${user.username}`,
+        userId: user._id,
+      });
+      
     }
 
     navigate(-1); // Go back to previous page
@@ -65,15 +83,8 @@ const PostsForm = () => {
           {isEdit ? 'Edit Post' : 'Create Post'}
         </h2>
 
-        <input
-          type="text"
-          name="author"
-          placeholder="Your name"
-          className="w-full bg-gray-800 border border-gray-700 p-2 rounded"
-          value={form.author}
-          onChange={handleChange}
-          required
-        />
+        <p className="text-gray-400 mb-1">Posting as <span className="font-semibold text-white">u/{user.username}</span></p>
+
 
         <input
           type="text"
