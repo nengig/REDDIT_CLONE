@@ -23,8 +23,9 @@ app.use(cookieParser()); // to handle cookies
 
 // Routes
 app.use("/comment", commentRouter); //comment & votes routes
-app.use("/api/user", userRouter); //log and register routes
-app.use('/api/posts', postRouter);
+app.use("/user", userRouter); //log and register routes
+// app.use('/api/posts', postRouter);
+app.use('/posts', postRouter);
 
 const startServer = async () => {
   try {

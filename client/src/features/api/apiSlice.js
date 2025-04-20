@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const port = import.meta.env.VITE_API_PORT || 8000;
-const baseUrl = `http://localhost:${port}/api`;
+// const baseUrl = `http://localhost:${port}/api`;
+const baseUrl = import.meta.env.VITE_SERVER_URL;
 
 export const redditApi = createApi({
   reducerPath: 'redditApi',

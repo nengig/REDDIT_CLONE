@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDeletePostMutation } from './features/api/apiSlice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Post = ({ post, fullView = false }) => {
     const [deletePost] = useDeletePostMutation();
@@ -39,9 +39,14 @@ const Post = ({ post, fullView = false }) => {
             {/* Example buttons (optional) */}
             {fullView && (
                 <div className="mt-4 flex space-x-4">
-                    <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500 text-sm">
-                        Edit
-                    </button>
+                    <Link
+                        to={`/edit-post/${post._id}`}
+                        className="inline-block bg-blue-600 hover:bg-blue-500 text-white py-1 px-3 rounded text-sm"
+                    >
+                        <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500 text-sm">
+                            Edit
+                        </button>
+                    </Link>
                     <button
                         onClick={handleDelete}
                         className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-500 text-sm">
