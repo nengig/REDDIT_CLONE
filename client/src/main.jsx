@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route element={<Layout />}>
           {/* <Route index element={<App />} /> */}
-          <Route index element={<Home />} />
+          <Route index element={<App />} />
           <Route path="profile" element={<UserProfile />} />
           <Route path="create-post" element={<PostsForm />} />
           <Route path="edit-post/:id" element={<PostsForm />} />

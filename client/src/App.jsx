@@ -46,10 +46,6 @@ function App() {
   return (
     <>
       <div className="bg-reddit_dark min-h-screen text-reddit_text">
-        <AuthModalContext.Provider
-          value={{ show: showAuthModal, setShow: setShowAuthModal }}>
-          <UserContext.Provider value={{ ...user, logout, setUser, getUser }}>
-          <Header />
           
             <BoardHeader />
             <div className="flex flex-col lg:flex-row px-6 gap-6 mt-6">
@@ -57,15 +53,14 @@ function App() {
               <div className="w-full lg:w-2/3 space-y-6">
                 <PostList />
               </div>
-              {/* SIDEBAR */}
+              {/* SIDEBAR
               <div className="w-full lg:w-1/3">
                 <SubredditSidebar />
-              </div>
+              </div> */}
             </div>
             <AuthModal />
             <CommentsPage />
-          </UserContext.Provider >
-        </AuthModalContext.Provider >
+
       </div >
     </>
   );
