@@ -12,12 +12,15 @@ import { useClickAway } from 'react-use';
 import AuthModalContext from './AuthModalContext';
 import UserContext from './UserContext';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 function Header() {
   const [userDropdownVisibility, setuserDropdownVisibility] = useState(false);
   const dropdownRef = useRef(null); // Create ref for the dropdown
   useClickAway(dropdownRef, () => setuserDropdownVisibility(false));
   const authModal = useContext(AuthModalContext)
   const user = useContext(UserContext)
+  const navigate = useNavigate();
 
   function toggleUserDropDown() {
     setuserDropdownVisibility(!userDropdownVisibility)
@@ -39,7 +42,10 @@ function Header() {
               <button className='px-2 py-1'>
                 <ChatBubbleOvalLeftEllipsisIcon className="text-gray-400 w-6 h-6 mx-2" />
               </button>
-              <button className='px-2 py-1 flex'>
+              <button onClick={() => navigate('/create-post')}
+              className='px-2 py-1 flex'
+              
+              >
                 <PlusIcon className="text-gray-400 w-6 h-6 mx-2" />
                 <p className='text-gray-400 font-semibold'>Create</p>
               </button>
