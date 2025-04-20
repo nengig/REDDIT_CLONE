@@ -60,7 +60,11 @@ router.post("/register", async (req, res) => {
 
         // Generate a token and set it as a cookie
         const token = auth.generateToken(newUser);
-        res.cookie('token', token);
+        res.cookie('token', token, {
+            httpOnly: true,       // can't access in JS
+            sameSite: 'lax',     // allow cross-site requests if top-level nav (good default)
+            secure: false,        // set to true in production with HTTPS
+          });
 
         // Send success response
         res.status(201).json({ message: `User ${username} registered successfully` });
@@ -96,7 +100,11 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "invalid password" });
         }
 
-        res.cookie('token', auth.generateToken(user)); // Generate JWT token and send as cookie
+        res.cookie('token', auth.generateToken(user), {
+            httpOnly: true,       // can't access in JS
+            sameSite: 'lax',     // allow cross-site requests if top-level nav (good default)
+            secure: false,       // set to true in production with HTTPS
+          }); // Generate JWT token and send as cookie
         res.json({ message: `welcome back, ${username}` });
 
 

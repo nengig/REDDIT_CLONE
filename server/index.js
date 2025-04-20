@@ -1,47 +1,44 @@
-import express from "express"; // if you are using type: module
+import dotenv from 'dotenv';
+import express, { json } from 'express';
+import { connect } from 'mongoose';
 import cors from 'cors';
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
-import * as mongoose from "mongoose";
-import dotenv from "dotenv";
+import cookieParser from 'cookie-parser';
 
-import comment_router from './routes/comment_router.js';
-import user_router from './routes/user_router.js'
-import router from './routes/post_router.js';
+import postRouter from './routes/post_router.js';
+import userRouter from './routes/user_router.js'; // 👈 import user routes
+import commentRouter from './routes/comment_router.js';
 
-dotenv.config()
-
+dotenv.config();
 const app = express();
-const PORT = process.env.PORT;
 
-// middlelware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser())
-app.use(express.json());
+// CORS setup
 app.use(cors({
-  origin: "http://localhost:5173", // set your front-end origin
-  credentials: true
+  origin: 'http://localhost:5173',
+  credentials: true,
 }));
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
-  console.log("Connected to MongoDB");
-  app.listen(PORT, () =>
-    console.log(`Server running on http://localhost:${PORT}`)
-  );
-})
-  .catch((error) => console.error("MongoDB connection error:", error));
+// Middleware
+app.use(json()); // to parse JSON bodies
+app.use(cookieParser()); // to handle cookies
 
+// Routes
+app.use("/comment", commentRouter); //comment & votes routes
+app.use("/api/user", userRouter); //log and register routes
+app.use('/api/posts', postRouter);
 
+const startServer = async () => {
+  try {
+    await connect(process.env.MONGODB_URI);
+    console.log('✅ MongoDB connected');
 
-// routes
-app.get("/", (req, res) => {
-  res.send("Welcome to our server");
-});
+    const PORT = process.env.PORT || 8000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server listening on http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('❌ MongoDB connection failed:', err.message);
+    process.exit(1); // Exit process if DB fails to connect
+  }
+};
 
-app.use("/comment", comment_router); //comment & votes routes
-app.use("/user", user_router); //log and register routes
-app.use('/posts', router);
-
-app.use("", (req, res) => {
-  res.status(404).send("Page not found");
-});
+startServer();

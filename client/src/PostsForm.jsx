@@ -1,92 +1,119 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// PostsForm.jsx
+import {
+  useCreatePostMutation,
+  useUpdatePostMutation,
+  useGetPostByIdQuery,
+} from './features/api/apiSlice';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import UserContext from './UserContext';
+import { useContext } from 'react';
 
-const CreatePostPage = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [author, setAuthor] = useState('');
-  const [error, setError] = useState('');
+
+const PostsForm = () => {
+  const user = useContext(UserContext);
+
   const navigate = useNavigate();
+  const { id } = useParams(); // Get post ID if in edit mode
+  const isEdit = Boolean(id);
 
-  // Handle form submission
+  const [form, setForm] = useState({
+    author: '',
+    title: '',
+    body: '',
+  });
+
+  const [createPost] = useCreatePostMutation();
+  const [updatePost] = useUpdatePostMutation();
+  const { data: postData, isLoading: loadingPost } = useGetPostByIdQuery(id, {
+    skip: !isEdit,
+  });
+
+  useEffect(() => {
+    if (postData) {
+      setForm({
+        author: postData.author || '',
+        title: postData.title || '',
+        body: postData.body || '',
+      });
+    }
+  }, [postData]);
+
+  const handleChange = (e) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !content || !author) {
-      setError('All fields are required!');
-      return;
-    }
+    const postData = {
+      ...form,
+      author: `u/${user.username}`,
+      userId: user._id,
+    };
+  
+    console.log('Post Data Being Sent:', postData);  // Log the data before sending it
 
-    const newPost = { title, content, author };
-
-    try {
-      const response = await fetch('http://localhost:8000/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPost),
+    if (isEdit) {
+      await updatePost({ id, ...form });
+    } else {
+      await createPost({
+        ...form,
+        author: `u/${user.username}`,
+        userId: user._id,
       });
-
       
-      if (response.ok) {
-        // Clear the form and navigate to the posts list page
-        setTitle('');
-        setContent('');
-        setAuthor('');
-        setError('');
-        navigate('/posts'); // Navigate to the posts list page after success
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Failed to create post');
-      }
-    } catch (error) {
-      setError('Error connecting to the server');
-      console.error('Error creating post:', error);
     }
+
+    navigate(-1); // Go back to previous page
   };
 
+  if (isEdit && loadingPost) return <p className="text-white px-6">Loading post data...</p>;
+
   return (
-    <div className="create-post-page">
-      <h1>Create a New Post</h1>
+    <div className="px-6 py-8">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 max-w-2xl mx-auto bg-reddit_dark-brighter p-6 rounded-md border border-reddit_border text-white"
+      >
+        <h2 className="text-2xl font-semibold mb-4">
+          {isEdit ? 'Edit Post' : 'Create Post'}
+        </h2>
 
-      {error && <p className="error-message">{error}</p>}
+        <p className="text-gray-400 mb-1">Posting as <span className="font-semibold text-white">u/{user.username}</span></p>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="title">Title:</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter the title"
-          />
-        </div>
 
-        <div>
-          <label htmlFor="content">Content:</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Enter the content"
-          />
-        </div>
+        <input
+          type="text"
+          name="title"
+          placeholder="Post title"
+          className="w-full bg-gray-800 border border-gray-700 p-2 rounded"
+          value={form.title}
+          onChange={handleChange}
+          required
+        />
 
-        <div>
-          <label htmlFor="author">Author:</label>
-          <input
-            type="text"
-            id="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            placeholder="Enter your name"
-          />
-        </div>
+        <textarea
+          name="body"
+          placeholder="Write your post..."
+          className="w-full bg-gray-800 border border-gray-700 p-2 rounded h-40"
+          value={form.body}
+          onChange={handleChange}
+          required
+        />
 
-        <button type="submit">Create Post</button>
+        <button
+          type="submit"
+          className="bg-reddit_orange hover:bg-orange-600 text-white py-2 px-6 rounded"
+        >
+          {isEdit ? 'Update Post' : 'Create Post'}
+        </button>
       </form>
     </div>
   );
 };
 
-export default CreatePostPage;
+export default PostsForm;

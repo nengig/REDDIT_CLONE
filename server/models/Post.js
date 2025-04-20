@@ -6,7 +6,7 @@ const postSchema = new Schema({
     required: true,
     trim: true,
   },
-  content: {
+  body: {
     type: String,
     required: true,
   },
@@ -14,6 +14,10 @@ const postSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
+  },
+  author: {
+    type: String,
+    required: true,
   },
   createdAt: {
     type: Date,
