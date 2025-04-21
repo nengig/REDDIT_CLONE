@@ -4,13 +4,13 @@ const { Schema, model } = mongoose;
 const commentSchema = new Schema({
     postId: {
         type: Schema.Types.ObjectId,
-        ref: 'Post',
+        ref: 'Posts',
         required: true
     },
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: false
     },
     parentId: {
         type: Schema.Types.ObjectId,
@@ -26,6 +26,14 @@ const commentSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    deleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Date,
+        default: null
+    }
 });
 
 const Comment = model('Comment', commentSchema);
@@ -33,4 +41,3 @@ export default Comment;
 
 
 
- 

@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import Posts from "../models/Post.js";
 import auth from "../middlewares/auth.js"
 
 const router = express.Router();
@@ -60,11 +61,7 @@ router.post("/register", async (req, res) => {
 
         // Generate a token and set it as a cookie
         const token = auth.generateToken(newUser);
-        res.cookie('token', token, {
-            httpOnly: true,       // can't access in JS
-            sameSite: 'lax',     // allow cross-site requests if top-level nav (good default)
-            secure: false,        // set to true in production with HTTPS
-          });
+        res.cookie('token', token);
 
         // Send success response
         res.status(201).json({ message: `User ${username} registered successfully` });
@@ -100,11 +97,7 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "invalid password" });
         }
 
-        res.cookie('token', auth.generateToken(user), {
-            httpOnly: true,       // can't access in JS
-            sameSite: 'lax',     // allow cross-site requests if top-level nav (good default)
-            secure: false,       // set to true in production with HTTPS
-          }); // Generate JWT token and send as cookie
+        res.cookie('token', auth.generateToken(user)); // Generate JWT token and send as cookie
         res.json({ message: `welcome back, ${username}` });
 
 
@@ -114,12 +107,50 @@ router.post("/login", async (req, res) => {
     }
 })
 
+// router.put('/updateUser', auth.getToken, async (req, res) => {
+//     const { username, email } = req.body;
+//     const userId = req.userInfo.id; // or whatever you encoded in your token
+
+//     try {
+//         // Check uniqueness of email (exclude current user)
+//         const emailTaken = await User.findOne({
+//             email,
+//             _id: { $ne: userId }
+//         });
+//         if (emailTaken) {
+//             return res.status(400).json({ error: 'Email already in use' });
+//         }
+
+//         // Check uniqueness of username
+//         const usernameTaken = await User.findOne({
+//             username,
+//             _id: { $ne: userId }
+//         });
+//         if (usernameTaken) {
+//             return res.status(400).json({ error: 'Username already in use' });
+//         }
+
+//         // Perform the update
+//         const updatedUser = await User.findByIdAndUpdate(
+//             userId,
+//             { username, email },
+//             { new: true, runValidators: true }
+//         ).select('-password');  // omit password in response
+
+//         res.json(updatedUser);
+//     } catch (error) {
+//         console.error('error updating profile', error);
+//         res.status(500).json({ message: "error changing password. try again later", error: error.message });
+//     }
+// });
+
+
 router.put('/updateUser', auth.getToken, async (req, res) => {
     const { username, email } = req.body;
-    const userId = req.userInfo.id; // or whatever you encoded in your token
+    const userId = req.userInfo.id;
 
     try {
-        // Check uniqueness of email (exclude current user)
+        // Check uniqueness of email
         const emailTaken = await User.findOne({
             email,
             _id: { $ne: userId }
@@ -137,19 +168,29 @@ router.put('/updateUser', auth.getToken, async (req, res) => {
             return res.status(400).json({ error: 'Username already in use' });
         }
 
-        // Perform the update
+        // Fetch old user to get current username
+        const currentUser = await User.findById(userId);
+
+        // Update user
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { username, email },
             { new: true, runValidators: true }
-        ).select('-password');  // omit password in response
+        ).select('-password');
+
+        // Update all posts authored by the old username
+        await Posts.updateMany(
+            { author: "u/" + currentUser.username },
+            { author: "u/" + username }
+        );
 
         res.json(updatedUser);
     } catch (error) {
         console.error('error updating profile', error);
-        res.status(500).json({ message: "error changing password. try again later", error: error.message });
+        res.status(500).json({ message: "error changing profile. try again later", error: error.message });
     }
 });
+
 
 router.put('/changePassword', auth.getToken, async (req, res) => {
     const { currentPassword, newPassword } = req.body;
@@ -202,6 +243,67 @@ router.delete('/delete', auth.getToken, async (req, res) => {
     } catch (error) {
         console.error("error deleting account:", error);
         res.status(500).json({ message: "error deleting account. try again later", error: error.message });
+    }
+});
+
+
+router.get('/searchUsers', async (req, res) => {
+    const searchTerm = req.query.search;
+
+    if (!searchTerm) {
+        return res.status(400).json({ message: 'Search term is required' });
+    }
+
+    const searchTerms = searchTerm.split(/\s+/);
+
+    try {
+        const query = {
+            $or: searchTerms.map(term => ({
+                $or: [
+                    { username: { $regex: `${term}`, $options: 'i' } },
+                ]
+            }))
+        };
+
+        const results = await User.find(query).select('username');;
+
+        console.log(results);
+
+        res.json(results);
+    } catch (error) {
+        console.error('Error occurred while searching posts:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+
+router.get("/u/:username", async (req, res) => {
+    const username = req.params.username;
+    try {
+        const user = await User
+            .findOne({ username: username })
+            .select('-password')
+            .populate('posts')        // pulls in Posts documents
+            // .populate('comments');    // pulls in Comment documents
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'postId',
+                }
+            });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found." });
+        }
+
+        console.log(user);
+
+        res.json(user);
+
+    } catch (error) {
+        console.error("error finding user:", error);
+        res.status(500).json({ message: "error finding user", error: error.message });
     }
 });
 

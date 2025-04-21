@@ -7,6 +7,8 @@ import cookieParser from 'cookie-parser';
 import postRouter from './routes/post_router.js';
 import userRouter from './routes/user_router.js'; // 👈 import user routes
 import commentRouter from './routes/comment_router.js';
+import community_router from "./routes/community_router.js";
+import folow_router from "./routes/follow_router.js";
 
 dotenv.config();
 const app = express();
@@ -26,6 +28,8 @@ app.use("/comment", commentRouter); //comment & votes routes
 app.use("/user", userRouter); //log and register routes
 // app.use('/api/posts', postRouter);
 app.use('/posts', postRouter);
+app.use("/community", community_router);
+app.use("/follow", folow_router);
 
 const startServer = async () => {
   try {
