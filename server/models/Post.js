@@ -19,10 +19,23 @@ const postSchema = new Schema({
     type: String,
     required: true,
   },
+  communityId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Community',
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
+  deleted: {
+    type: Boolean,
+    default: false
+  },
+  deletedAt: {
+    type: Date,
+    default: null
+  }
 });
 
 const Posts = model('Posts', postSchema);

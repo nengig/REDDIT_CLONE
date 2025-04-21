@@ -14,7 +14,7 @@ const VoteSchema = new mongoose.Schema({
   onModel: {
     type: String,
     required: true,
-    enum: ['Post', 'Comment'] // Allows voting on either posts or comments
+    enum: ['Posts', 'Comment'] // Allows voting on either posts or comments
   },
   direction: {
     type: Number,
@@ -22,6 +22,8 @@ const VoteSchema = new mongoose.Schema({
     required: true
   }
 });
+
+VoteSchema.index({ userId: 1, parentId: 1 });
 
 const Vote = mongoose.model('Vote', VoteSchema);
 export default Vote;
