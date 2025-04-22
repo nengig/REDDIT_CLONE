@@ -17,7 +17,7 @@ function Voting(props) {
 
 
     const updateVote = async (direction) => {
-        console.log(direction);
+        // console.log(direction);
 
         const vote = {
             parentId: parentId,
@@ -41,7 +41,7 @@ function Voting(props) {
 
         const data = await response.json();
 
-        console.log(data);
+        // console.log(data);
         setVoted(data.active);
         setUserVote(data?.vote?.direction);
 
@@ -55,7 +55,7 @@ function Voting(props) {
         return fetch(`${import.meta.env.VITE_SERVER_URL}comment/${parentId}/totalvotes/`, { credentials: 'include' })
             .then((res) => res.json())
             .then((data) => {
-                console.log("Total votes data:", data);
+                // console.log("Total votes data:", data);
                 setTotalVotes(data.total_votes);
             })
             .catch((err) => {
@@ -72,7 +72,7 @@ function Voting(props) {
                 return res.json();
             })
             .then((data) => {
-                console.log("User vote data:", data);
+                // console.log("User vote data:", data);
                 setUserVote(data.userVote); // adjust this if the format is different
             })
             .catch((err) => {
@@ -103,7 +103,7 @@ function Voting(props) {
 
 
     const handleVoteUp = () => {
-        console.log(userInfo)
+        // console.log(userInfo)
         if (userInfo.username == undefined) {
             authModal.setShow('login');
         } else {

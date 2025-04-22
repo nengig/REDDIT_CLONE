@@ -18,12 +18,14 @@ import PostsForm from './PostsForm.jsx';
 import PostPage from './PostPage.jsx';
 import Homepage from './Homepage.jsx';
 import MyCommunitiesPage from './MyCommunitiesPage.jsx';
+import ScrollToTop from './ScrollToTop.jsx';
 
 
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* all routes share the Layout */}
         <Route element={<Layout />}>

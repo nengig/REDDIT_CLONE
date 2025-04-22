@@ -36,7 +36,7 @@ export default function Homepage() {
     }, []);
 
     return (
-        <div className="px-6 bg-reddit_dark text-reddit_text min-h-dvh mt-5 lg:w-3/5 flex flex-col relative lg:left-30">
+        <div className="px-6 bg-reddit_dark text-reddit_text min-h-dvh lg:w-3/5 flex flex-col relative lg:left-30">
             {posts?.length > 0 ? (
                 <div className='pl-4'>
                     {

@@ -66,8 +66,8 @@ const PostsForm = () => {
     } else {
       await createPost(postData);
     }
-
-    navigate(-1);
+    navigate("/home");
+    // navigate(-1);
   };
 
   const getAllCommunities = async () => {

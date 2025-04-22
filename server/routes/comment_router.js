@@ -52,38 +52,6 @@ router.post("/", auth.getToken, async (req, res) => {
   }
 });
 
-// router.post("/", auth.getToken, (req, res) => {
-//   try {
-//     console.log("0 - ", req.body);
-
-//     // if (!content) {
-//     //   return res.status(400).json({ error: "User ID and content are required." });
-//     // }
-
-//     console.log("1 - ", req.body);
-
-//     const newComment = new Comment({
-//       userId: req.userInfo.id,
-//       postId: req.body.postId,
-//       parentId: req.body.parentId, // == undefined ? "67ef1ff021e35562db8a746a85" : req.body.parentId,
-//       content: req.body.content
-//     })
-
-//     console.log("2 - ", req.body);
-
-//     newComment.save().then((comment) => {
-//       console.log("comment saved successfully");
-
-//       res.send(comment);
-//     }).catch((error) => res.status(400).send({ message: `Error saving comment into database. Error: ${error}` }));
-//   }
-//   catch (error) {
-//     console.log(`Error: ${error}`)
-//     res.status(500).send({ message: `Error saving comment. Error: ${error}` });
-//   }
-// });
-
-
 //update comment
 router.put("/:commentId", auth.getToken, async (req, res) => {
   try {
@@ -112,82 +80,6 @@ router.put("/:commentId", auth.getToken, async (req, res) => {
     return res.status(500).json({ message: `Server error: ${error.message}` });
   }
 });
-
-
-
-
-//makes a votes on a specific comment
-// router.post("/vote/", auth.getToken, async (req, res) => {
-//   let { parentId, onModel, direction } = req.body;
-
-//   const userId = req.userInfo.id;
-//   const existing_vote = await Vote.findOne({ userId, parentId, onModel });
-
-//   if (existing_vote) {
-//     existing_vote.direction = direction;
-//     existing_vote.save().then(() => {
-//       res.status(200).json({ message: 'Vote updated', vote: existing_vote })
-//     });
-//   } else {
-//     const newVote = new Vote({ userId, parentId, onModel, direction });
-//     newVote.save().then(() => {
-//       res.status(201).json({ message: 'Vote created', vote: newVote })
-//     });
-//   }
-// });
-
-// router.post("/vote/", auth.getToken, async (req, res) => {
-//   try {
-//     const { parentId, onModel, direction } = req.body;
-//     const userId = req.userInfo.id;
-
-//     const vote = await Vote.findOneAndUpdate(
-//       { userId, parentId, onModel },
-//       { $set: { direction } },
-//       { new: true }
-//     );
-
-//     if (vote) {
-//       return res.status(200).json({ message: 'Vote updated', vote });
-//     }
-
-//     const newVote = await Vote.create({ userId, parentId, onModel, direction });
-//     return res.status(201).json({ message: 'Vote created', vote: newVote });
-
-//   } catch (err) {
-//     console.error("Vote error:", err);
-//     return res.status(500).json({ message: 'Server error' });
-//   }
-// });
-// router.post("/vote/", auth.getToken, async (req, res) => {
-//   try {
-//     const { parentId, onModel, direction } = req.body;
-//     const userId = req.userInfo.id;
-
-//     const existingVote = await Vote.findOne({ userId, parentId, onModel });
-
-//     if (existingVote) {
-//       if (existingVote.direction === direction) {
-//         // Same vote again = toggle (remove it)
-//         await Vote.deleteOne({ _id: existingVote._id });
-//         return res.status(200).json({ message: "Vote removed" });
-//       } else {
-//         // Change direction
-//         existingVote.direction = direction;
-//         await existingVote.save();
-//         return res.status(200).json({ message: "Vote updated", vote: existingVote });
-//       }
-//     }
-
-//     // No vote exists, create new
-//     const newVote = await Vote.create({ userId, parentId, onModel, direction });
-//     return res.status(201).json({ message: "Vote created", vote: newVote });
-
-//   } catch (err) {
-//     console.error("Vote error:", err);
-//     return res.status(500).json({ message: "Server error" });
-//   }
-// });
 
 router.post("/vote/", auth.getToken, async (req, res) => {
   try {
@@ -253,8 +145,6 @@ router.get("/:parentId/getVoteOfUser", auth.getToken, async (req, res) => {
     const userId = req.userInfo.id;
 
     const vote = await Vote.findOne({ userId, parentId }).lean();
-
-    console.log("Query took:", Date.now() - start, "ms");
 
     if (vote) {
       return res.json({ userVote: vote.direction });
@@ -333,7 +223,7 @@ router.get('/searchComments', async (req, res) => {
             select: 'name description'
           }
         ]
-      });
+      }).sort({ createdAt: -1 });
 
     res.json(results);
   } catch (error) {
