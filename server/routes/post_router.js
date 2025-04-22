@@ -4,6 +4,7 @@ import Follow from '../models/Follow.js';
 import Community from '../models/Community.js';
 import auth from '../middlewares/auth.js';
 import User from '../models/User.js';
+import Vote from '../models/Vote.js';
 
 
 const postRouter = express.Router();
@@ -141,12 +142,12 @@ postRouter.delete('/:id', async (req, res) => {
 
 postRouter.get('/posts/home', auth.getToken, async (req, res) => {
   try {
-    const userId = req.userInfo.id; 
-  
+    const userId = req.userInfo.id;
+
     const follows = await Follow.find({ followerId: userId }).select('followingId');
     const followingIds = follows.map(f => f.followingId);
 
-    
+
     const communities = await Community.find({ members: userId }).select('_id');
     const communityIds = communities.map(c => c._id);
 
@@ -170,6 +171,47 @@ postRouter.get('/posts/home', auth.getToken, async (req, res) => {
 });
 
 
+postRouter.get("/posts/upvoted", auth.getToken, async (req, res) => {
+  try {
+    const userId = req.userInfo.id;
+
+    const votes = await Vote.find({
+      userId,
+      direction: 1,
+      onModel: "Posts"
+    }).lean();
+
+    const postIds = votes.map((vote) => vote.parentId);
+
+    const posts = await Posts.find({ _id: { $in: postIds } }).lean();
+    return res.json({ posts });
+  }
+  catch (err) {
+    console.error("Error fetching upvoted posts:", err);
+    res.status(500).json({ message: "Error fetching upvoted posts." });
+  }
+});
+
+postRouter.get("/posts/downvoted", auth.getToken, async (req, res) => {
+  try {
+    const userId = req.userInfo.id;
+
+    const votes = await Vote.find({
+      userId,
+      direction: -1,
+      onModel: "Posts"
+    }).lean();
+
+    const postIds = votes.map((vote) => vote.parentId);
+
+    const posts = await Posts.find({ _id: { $in: postIds } }).lean();
+    return res.json({ posts });
+  }
+  catch (err) {
+    console.error("Error fetching upvoted posts:", err);
+    res.status(500).json({ message: "Error fetching upvoted posts." });
+  }
+})
 
 
 

@@ -15,7 +15,7 @@ import PostDetails from "./PostDetails";
 import ConfirmModal from "./ConfirmModal";
 
 
-const TABS = ["Overview", "Posts", "Comments"];
+const TABS = ["Overview", "Posts", "Comments", "Upvoted", "Downvoted"];
 
 export default function ViewUserProfile() {
     const { username } = useParams();
@@ -24,6 +24,9 @@ export default function ViewUserProfile() {
     const [following, setFollowing] = useState(false); //logged In user
     const [numOfFollowers, setNumOfFollowers] = useState();
     const [numOfFollowing, setNumOfFollowing] = useState();
+
+    const [upvotes, setUpvotes] = useState([]);
+    const [downvotes, setDownvotes] = useState([]);
 
     const loggedInUserInfo = useContext(UserContext);
 
@@ -44,7 +47,7 @@ export default function ViewUserProfile() {
 
 
     useEffect(() => {
-        console.log("username ", loggedInUserInfo.username);
+        // console.log("username ", loggedInUserInfo.username);
 
 
         const getUserProfile = async () => {
@@ -58,7 +61,7 @@ export default function ViewUserProfile() {
                 }
 
                 const data = await res.json();
-                console.log(data);
+                // console.log(data);
                 setUserData(data);
                 isFollowing(data._id);
                 getNumOfFollowers(data._id);
@@ -69,6 +72,8 @@ export default function ViewUserProfile() {
         }
 
         getUserProfile();
+        getUpvotes();
+        getDownvotes();
         if (loggedInUserInfo.username) {
             setForm({ username: loggedInUserInfo.username, email: loggedInUserInfo.email });
         }
@@ -76,11 +81,56 @@ export default function ViewUserProfile() {
     }, [loggedInUserInfo.username, loggedInUserInfo.email]);
 
 
+    const getUpvotes = async () => {
+        // posts/upvoted
+        try {
+            // console.log(`${import.meta.env.VITE_SERVER_URL}posts/posts/upvoted`);
+            const res = await fetch(
+                `${import.meta.env.VITE_SERVER_URL}posts/posts/upvoted`, {
+                credentials: "include"
+            }
+            );
+
+            if (!res.ok) {
+                throw new Error("Failed to fetch search results");
+            }
+
+            const data = await res.json();
+            console.log(data);
+            setUpvotes(data);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    
+    const getDownvotes = async () => {
+        // posts/upvoted
+        try {
+            // console.log(`${import.meta.env.VITE_SERVER_URL}posts/posts/upvoted`);
+            const res = await fetch(
+                `${import.meta.env.VITE_SERVER_URL}posts/posts/downvoted`, {
+                credentials: "include"
+            }
+            );
+
+            if (!res.ok) {
+                throw new Error("Failed to fetch search results");
+            }
+
+            const data = await res.json();
+            console.log(data);
+            setDownvotes(data);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+
     // followingId
     const isFollowing = async (targetUserId) => {
         try {
-            console.log(targetUserId);
-            console.log(`${import.meta.env.VITE_SERVER_URL}follow/isFollowing/${targetUserId}`);
+            // console.log(targetUserId);
+            // console.log(`${import.meta.env.VITE_SERVER_URL}follow/isFollowing/${targetUserId}`);
             const res = await fetch(
                 `${import.meta.env.VITE_SERVER_URL}follow/isFollowing/${targetUserId}`, {
                 credentials: "include"
@@ -92,7 +142,7 @@ export default function ViewUserProfile() {
             }
 
             const data = await res.json();
-            console.log(data);
+            // console.log(data);
             setFollowing(data.isFollowing);
         } catch (err) {
             console.error(err);
@@ -102,8 +152,8 @@ export default function ViewUserProfile() {
     // getNumOfFollowers
     const getNumOfFollowers = async (targetUserId) => {
         try {
-            console.log(targetUserId);
-            console.log(`${import.meta.env.VITE_SERVER_URL}follow/${targetUserId}/followers/`);
+            // console.log(targetUserId);
+            // console.log(`${import.meta.env.VITE_SERVER_URL}follow/${targetUserId}/followers/`);
             const res = await fetch(
                 `${import.meta.env.VITE_SERVER_URL}follow/${targetUserId}/followers/`);
 
@@ -112,7 +162,7 @@ export default function ViewUserProfile() {
             }
 
             const data = await res.json();
-            console.log(data.length);
+            // console.log(data.length);
             setNumOfFollowers(data.length);
         } catch (err) {
             console.error(err);
@@ -122,8 +172,8 @@ export default function ViewUserProfile() {
     // getNumOfFollowers
     const getNumOfFollowing = async (targetUserId) => {
         try {
-            console.log(targetUserId);
-            console.log(`${import.meta.env.VITE_SERVER_URL}follow/${targetUserId}/following/`);
+            // console.log(targetUserId);
+            // console.log(`${import.meta.env.VITE_SERVER_URL}follow/${targetUserId}/following/`);
             const res = await fetch(
                 `${import.meta.env.VITE_SERVER_URL}follow/${targetUserId}/following/`);
 
@@ -132,7 +182,7 @@ export default function ViewUserProfile() {
             }
 
             const data = await res.json();
-            console.log(data);
+            // console.log(data);
             setNumOfFollowing(data.length);
         } catch (err) {
             console.error(err);
@@ -216,12 +266,12 @@ export default function ViewUserProfile() {
 
     return (
         <div className="bg-[#030303] min-h-screen text-white ">
-            { userData?.username ? (
+            {userData?.username ? (
                 <div>
                     <div className="relative h-40 bg-[#1A1A1B] mx-3 rounded-lg">
                         <div className="absolute -bottom-10 left-6">
                             <div className="w-24 h-24 rounded-full border-4 border-[#030303] bg-gray-800 flex items-center justify-center">
-                                
+
                                 <img
                                     src={Avatar}
                                     alt=""
@@ -236,7 +286,7 @@ export default function ViewUserProfile() {
                             <h1 className="text-2xl font-bold mb-2  ml-6">u/{userData.username}</h1>
 
                             {!isEditing && !isChangingPassword && (
-                                <div className="flex mx-3 space-x-6">
+                                <div className="lg:flex mx-3 space-x-6">
 
                                     <div className="p-6 w-2/3">
                                         {/* Tabs */}
@@ -273,10 +323,10 @@ export default function ViewUserProfile() {
                                                                                     <img src={Avatar} alt="" className="block w-full h-full object-cover" />
                                                                                 </div>
                                                                                 <h2 className="text-md font-light self-center">u/{userData.username}</h2>
-                                                                                
+
                                                                             </div>
                                                                             <p className="text-gray-400 text-xs my-2 flex">commented on <p className="text-white ml-2">
-                                                                                
+
                                                                                 {post.postId?.title?.slice(0, 50)}{post.postId?.title?.length > 50 && '...'}
                                                                             </p>
                                                                                 <span className="ml-2"> {' '}•</span>
@@ -300,7 +350,7 @@ export default function ViewUserProfile() {
                                             </div>
                                         )}
 
-                                        {/* Tab content */}
+                                        {/* Posts Tab content */}
                                         {activeTab === "Posts" && (
                                             <div className="space-y-4 ml-4">
                                                 {userData.posts.length === 0 ? (
@@ -308,7 +358,7 @@ export default function ViewUserProfile() {
                                                 ) : (
                                                     userData.posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
 
-                                                        <PostDetails key={post._id} post={post} from="userProfile" /> 
+                                                        <PostDetails key={post._id} post={post} from="userProfile" />
 
                                                     ))
                                                 )}
@@ -345,6 +395,38 @@ export default function ViewUserProfile() {
                                                                 </div>
                                                             </Link>
                                                         </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        )}
+
+
+                                        {/* Upvoted Tab content */}
+                                        {activeTab === "Upvoted" && (
+                                            <div className="space-y-4 ml-4">
+                                                {upvotes.posts.length === 0 ? (
+                                                    <p className="text-gray-400 italic">No upvoted posts yet.</p>
+                                                ) : (
+                                                    upvotes.posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
+
+                                                        <PostDetails key={post._id} post={post} from="userProfile" />
+
+                                                    ))
+                                                )}
+                                            </div>
+                                        )}
+
+
+                                        {/* Upvoted Tab content */}
+                                        {activeTab === "Downvoted" && (
+                                            <div className="space-y-4 ml-4">
+                                                {downvotes.posts.length === 0 ? (
+                                                    <p className="text-gray-400 italic">No downvoted posts yet.</p>
+                                                ) : (
+                                                    downvotes.posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
+
+                                                        <PostDetails key={post._id} post={post} from="userProfile" />
+
                                                     ))
                                                 )}
                                             </div>

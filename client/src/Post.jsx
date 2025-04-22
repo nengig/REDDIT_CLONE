@@ -117,7 +117,7 @@ const Post = ({ post, fullView = false }) => {
                 </p>
 
                 <div className='block border-t border-reddit_border mt-5'>
-                    <Voting parentId={post._id} for="Comment" disabled={post.deleted} postDeleted={false} />
+                    <Voting parentId={post._id} for="Posts" disabled={post.deleted} postDeleted={false} />
                 </div>
                 <CommentsPage postId={post._id} disabled={post.deleted ? post.deleted : false} />
             </div>

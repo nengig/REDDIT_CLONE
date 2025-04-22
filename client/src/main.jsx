@@ -27,8 +27,8 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         {/* all routes share the Layout */}
         <Route element={<Layout />}>
-          <Route index element={<Homepage />} />
-          <Route path="/all" element={<Home />} />
+          <Route index element={<Home />} />
+          <Route path="/home" element={<Homepage />} />
           <Route path="/profile" element={<UserProfile />} />
 
           <Route path="/posts" element={<PostingApp />} />
