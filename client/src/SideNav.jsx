@@ -11,8 +11,8 @@ import { useContext } from "react";
 import UserContext from "./UserContext";
 
 const navItems = [
-    { name: "Home", icon: HomeIcon, to: "/" },
-    { name: "All", icon: GlobeAltIcon, to: "/all" },
+    { name: "Home", icon: HomeIcon, to: "/home" },
+    { name: "All", icon: GlobeAltIcon, to: "/" },
     { name: "Create Post", icon: PlusCircleIcon, to: "/create-post" },
     { name: "Create Community", icon: PlusCircleIcon, to: "/createCommunity" },
     { name: "My Communities", icon: BookOpenIcon, to: "/myCommunities" },

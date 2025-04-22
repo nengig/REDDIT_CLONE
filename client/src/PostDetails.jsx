@@ -52,14 +52,14 @@ const PostDetails = ({ post, from }) => {
           }
 
 
-          <h3 className="text-sm text-reddit_text ml-2 self-center">
+          <h3 className="text-md text-reddit_text ml-1 self-center">
             {communityName}
           </h3>
         </Link>
 
         <div className='self-center'>
 
-          <p className="text-sm text-reddit_text-darker ml-3">
+          <p className="text-md text-reddit_text-darker ml-3">
             {'   '} • {' '}
             <TimeAgo
               className="text-sm font-sans text-gray-500"
@@ -70,15 +70,15 @@ const PostDetails = ({ post, from }) => {
 
 
       </div>
-      <Link to={`/post/${post._id}`} className="block mb-2">
+      <Link to={`/post/${post._id}`} className="block mb-2 mt-3 ml-1">
 
         <div>
-          <p className="text-sm text-reddit_text break-words">
+          <p className="text-lg text-reddit_text break-words">
             {post.title?.slice(0, 100)}{post.title?.length > 100 && '...'}
           </p>
         </div>
 
-        <p className="text-sm text-reddit_text break-words">
+        <p className="text-md text-reddit_text break-words">
           {post.body?.slice(0, 100)}{post.body?.length > 100 && '...'}
         </p>
 

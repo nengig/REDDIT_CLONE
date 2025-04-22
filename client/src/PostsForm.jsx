@@ -118,7 +118,7 @@ const PostsForm = () => {
     <div className="px-6 py-8 flex items-center justify-center min-h-dvh  "> 
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 max-w-2xl mx-auto bg-reddit_dark-brighter p-6 rounded-md border border-reddit_border text-white w-full"
+        className="space-y-4 max-w-2xl mx-auto bg-reddit_dark-brightest p-6 rounded-md border border-reddit_border text-white w-full"
       >
         <h2 className="text-2xl font-semibold mb-4">{isEdit ? 'Edit Post' : 'Create Post'}</h2>
 
