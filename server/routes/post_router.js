@@ -131,6 +131,9 @@ postRouter.delete('/:id', async (req, res) => {
 
     await post.save();
 
+    // Not entirely sure how Reddit handles this internally, but I'm deleting based on my best understanding of the typical approach.
+    await Vote.deleteMany({ parentId: req.params.id });
+
     res.json({ message: 'Post soft-deleted and content removed' });
   } catch (err) {
     console.error('❌ Error soft-deleting post:', err.message);
