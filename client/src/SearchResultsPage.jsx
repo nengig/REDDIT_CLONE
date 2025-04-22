@@ -84,6 +84,7 @@ export default function SearchPage() {
             }
 
             const data = await res.json();
+            console.log("comments");
             console.log(data);
             setComments(data);
         } catch (err) {
@@ -160,7 +161,7 @@ export default function SearchPage() {
                                     subreddit: data.postId.communityId.name,
                                     created: data.createdAt,
                                     postTitle: data.postId.title,
-                                    user: data.postId.userId.username,
+                                    user: data.postId.userId?.username,
                                     content: data.content,
                                     // votes: "20K",
                                     // totalVotes: "14K",
