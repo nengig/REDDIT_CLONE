@@ -13,6 +13,7 @@ import axios from 'axios';
 import PostDetails from "./PostDetails";
 
 import ConfirmModal from "./ConfirmModal";
+import ShowUsersModal from "./ShowUsersModal";
 
 
 const TABS = ["Overview", "Posts", "Comments", "Upvoted", "Downvoted"];
@@ -22,8 +23,13 @@ export default function ViewUserProfile() {
     const [activeTab, setActiveTab] = useState("Overview");
     const [userData, setUserData] = useState([]);
     const [following, setFollowing] = useState(false); //logged In user
-    const [numOfFollowers, setNumOfFollowers] = useState();
-    const [numOfFollowing, setNumOfFollowing] = useState();
+    const [followers, setFollowers] = useState();
+    const [usersFollowing, setUserFollowing] = useState();
+
+
+
+    const [showFollowers, setShowFollowers] = useState(false);
+    const [showFollowing, setShowFollowing] = useState(false);
 
     const [upvotes, setUpvotes] = useState([]);
     const [downvotes, setDownvotes] = useState([]);
@@ -64,8 +70,8 @@ export default function ViewUserProfile() {
                 // console.log(data);
                 setUserData(data);
                 isFollowing(data._id);
-                getNumOfFollowers(data._id);
-                getNumOfFollowing(data._id);
+                getFollowers(data._id);
+                getFollowing(data._id);
             } catch (err) {
                 console.error(err);
             }
@@ -102,7 +108,7 @@ export default function ViewUserProfile() {
             console.error(err);
         }
     }
-    
+
     const getDownvotes = async () => {
         // posts/upvoted
         try {
@@ -149,8 +155,8 @@ export default function ViewUserProfile() {
         }
     }
 
-    // getNumOfFollowers
-    const getNumOfFollowers = async (targetUserId) => {
+    // getFollowers
+    const getFollowers = async (targetUserId) => {
         try {
             // console.log(targetUserId);
             // console.log(`${import.meta.env.VITE_SERVER_URL}follow/${targetUserId}/followers/`);
@@ -162,15 +168,15 @@ export default function ViewUserProfile() {
             }
 
             const data = await res.json();
-            // console.log(data.length);
-            setNumOfFollowers(data.length);
+            console.log(data);
+            setFollowers(data);
         } catch (err) {
             console.error(err);
         }
     }
 
-    // getNumOfFollowers
-    const getNumOfFollowing = async (targetUserId) => {
+    // getFollowing
+    const getFollowing = async (targetUserId) => {
         try {
             // console.log(targetUserId);
             // console.log(`${import.meta.env.VITE_SERVER_URL}follow/${targetUserId}/following/`);
@@ -182,8 +188,8 @@ export default function ViewUserProfile() {
             }
 
             const data = await res.json();
-            // console.log(data);
-            setNumOfFollowing(data.length);
+            console.log(data);
+            setUserFollowing(data);
         } catch (err) {
             console.error(err);
         }
@@ -439,12 +445,32 @@ export default function ViewUserProfile() {
 
 
                                         <div className="flex gap-4 text-sm text-gray-400 my-4">
-                                            <span>{numOfFollowers} follower{numOfFollowers?.length > 1 && "s"}</span>
+                                            <button onClick={() => setShowFollowers(true)}>
+                                                <span>{followers?.length} follower{followers?.length > 1 && "s"}</span>
+                                            </button>
+
+                                            <ShowUsersModal
+                                                isOpen={showFollowers}
+                                                onClose={() => setShowFollowers(false)}
+                                                title="Followers"
+                                                users={followers}
+                                            />
                                         </div>
 
                                         <div className="flex gap-4 text-sm text-gray-400 my-4">
-                                            <span>{numOfFollowing} following</span>
+                                            <button onClick={() => setShowFollowing(true)}>
+                                                <span>{usersFollowing?.length} following</span>
+                                            </button>
+
+                                            <ShowUsersModal
+                                                isOpen={showFollowing}
+                                                onClose={() => setShowFollowing(false)}
+                                                title="Following"
+                                                users={usersFollowing}
+                                            />
                                         </div>
+
+
 
 
                                         <div className="flex gap-4 text-sm text-gray-400 my-4">
