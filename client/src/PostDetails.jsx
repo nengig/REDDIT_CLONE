@@ -73,12 +73,12 @@ const PostDetails = ({ post, from }) => {
       <Link to={`/post/${post._id}`} className="block mb-2 mt-3 ml-1">
 
         <div>
-          <p className="text-lg text-reddit_text break-words">
+          <p className="text-md text-reddit_text break-words">
             {post.title?.slice(0, 100)}{post.title?.length > 100 && '...'}
           </p>
         </div>
 
-        <p className="text-md text-reddit_text break-words">
+        <p className="text-sm text-reddit_text break-words">
           {post.body?.slice(0, 100)}{post.body?.length > 100 && '...'}
         </p>
 
