@@ -1,69 +1,3 @@
-// import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/solid";
-// import { Link } from "react-router-dom";
-
-// const mockComments = [
-//   {
-//     id: 1,
-//     user: "johndoe",
-//     subreddit: "javascript",
-//     postTitle: "What's the difference between var, let and const?",
-//     content: "Great question! The main difference lies in scope and mutability...",
-//     created: "3 hours ago",
-//     postId: "123",
-//   },
-//   {
-//     id: 2,
-//     user: "codewizard",
-//     subreddit: "reactjs",
-//     postTitle: "Why use useEffect?",
-//     content: "useEffect is React's way to handle side effects in components...",
-//     created: "1 day ago",
-//     postId: "456",
-//   },
-// ];
-
-// export default function CommentsSearchCard() {
-//   return (
-//     <div className="bg-[#030303] text-white px-6 max-w-4xl mx-auto">
-//       {mockComments.map((comment) => (
-//         <div
-//           key={comment.id}
-//           className="p-4 border-b border-gray-700 hover:bg-[#1a1a1b] transition"
-//         >
-//           <div className="flex items-center gap-2 text-sm text-gray-400 mb-1">
-//             <ChatBubbleLeftEllipsisIcon className="w-5 h-5 text-gray-500" />
-//             <span>
-//               <Link to={`/user/${comment.user}`} className="hover:underline">
-//                 u/{comment.user}
-//               </Link>{" "}
-//               commented on{" "}
-//               <Link to={`/post/${comment.postId}`} className="text-blue-400 hover:underline">
-//                 {comment.postTitle}
-//               </Link>{" "}
-//               in{" "}
-//               <Link to={`/r/${comment.subreddit}`} className="text-blue-400 hover:underline">
-//                 r/{comment.subreddit}
-//               </Link>
-//             </span>
-//             <span className="ml-auto text-xs">{comment.created}</span>
-//           </div>
-
-//           <div className="pl-7 text-sm text-gray-300">
-//             {comment.content.length > 200
-//               ? comment.content.slice(0, 200) + "..."
-//               : comment.content}
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-
-
-
-
-
 import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import TimeAgo from "timeago-react";
@@ -101,7 +35,7 @@ const CommentsSearchCard = ({ comment, uKey }) => {
         {/* Comment Box */}
         <div className="bg-[#1a1a1b] p-4 rounded-lg">
           <div className="text-sm text-gray-400 mb-2">
-            <span className="font-medium text-white">u/{comment.user}</span> · {" "}
+            <span className="font-medium text-white">u/{comment.user ? comment.user : "deleted"}</span> · {" "}
             <TimeAgo
               className="text-sm font-sans text-gray-500"
               datetime={comment.created} //postCreatedAt

@@ -14,20 +14,13 @@ export default function ShowUsersModal({ isOpen, onClose, title, users }) {
   if (!isOpen) return null;
 
   return (
-    // <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-    //   <div className="bg-white dark:bg-[#1a1a1b] rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
       <div className="bg-white text-black w-[90%] max-w-md dark:bg-[#1a1a1b]  rounded-lg p-6 relative max-h-[66vh] overflow-y-auto">
-        {/* <button
-          onClick={onClose}
-          className="absolute top-4 right-6 text-gray-600 hover:text-black text-lg"
-        >
-          &times;
-        </button> */}
+        
 
-        <h2 className="text-xl text-white font-bold mb-4">{title}</h2>
+        <h2 className="text-xl text-black font-bold mb-4">{title}</h2>
         <div className="relative">
-          <button onClick={onClose} className="absolute -top-11 right-6 text-gray-500 hover:text-white text-lg cursor-pointer">
+          <button onClick={onClose} className="absolute -top-11 right-6 text-black-500 hover:text-gray text-lg cursor-pointer">
             Close &times;
           </button>
         </div>
@@ -47,7 +40,7 @@ export default function ShowUsersModal({ isOpen, onClose, title, users }) {
                     />
                   </div>
                   <div className="flex items-center h-full w-full overflow-hidden mt-2">
-                    <p className="text-lg truncate pb-2 text-white"> {(title == "Followers") ? user.followerId?.username : user.followingId?.username}</p>
+                    <p className="text-lg truncate pb-2 text-black"> {(title == "Followers") ? user.followerId?.username : user.followingId?.username}</p>
                   </div>
                 </div>
               </div>

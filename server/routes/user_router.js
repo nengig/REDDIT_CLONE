@@ -4,6 +4,10 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Posts from "../models/Post.js";
 import auth from "../middlewares/auth.js"
+import Comment from "../models/Comment.js";
+import Community from "../models/Community.js";
+
+import Follow from "../models/Follow.js";
 
 const router = express.Router();
 router.get("/getUser", auth.getToken, async (req, res) => {
@@ -228,21 +232,64 @@ router.put('/changePassword', auth.getToken, async (req, res) => {
     }
 });
 
+// router.delete('/delete', auth.getToken, async (req, res) => {
+//     const userId = req.userInfo.id;
+//     try {
+//         // Optionally: remove all user‑owned data here (posts, comments, etc.)
+
+//         // Delete the user
+//         await User.findByIdAndDelete(userId);
+
+//         // Clear the auth cookie
+//         res.clearCookie('token');
+
+//         res.json({ message: 'account deleted successfully.' });
+//     } catch (error) {
+//         console.error("error deleting account:", error);
+//         res.status(500).json({ message: "error deleting account. try again later", error: error.message });
+//     }
+// });
+
 router.delete('/delete', auth.getToken, async (req, res) => {
     const userId = req.userInfo.id;
+
     try {
-        // Optionally: remove all user‑owned data here (posts, comments, etc.)
+        await Posts.updateMany(
+            { userId },
+            {
+                $set: {
+                    author: '[deleted]',
+                    userId: null
+                }
+            }
+        );
 
-        // Delete the user
+        await Comment.updateMany(
+            { userId },
+            {
+                $set: {
+                    userId: null
+                }
+            }
+        );
+
+        await Follow.deleteMany({ $or: [{ followerId: userId }, { followingId: userId }] });
+
+        await Community.updateMany(
+            { members: userId },
+            { $pull: { members: userId } }
+        );
         await User.findByIdAndDelete(userId);
-
-        // Clear the auth cookie
         res.clearCookie('token');
 
-        res.json({ message: 'account deleted successfully.' });
+        res.json({ message: 'Account deleted successfully. Content preserved, user identity removed.' });
+
     } catch (error) {
-        console.error("error deleting account:", error);
-        res.status(500).json({ message: "error deleting account. try again later", error: error.message });
+        console.error("Error deleting account:", error);
+        res.status(500).json({
+            message: "Error deleting account. Try again later.",
+            error: error.message
+        });
     }
 });
 
